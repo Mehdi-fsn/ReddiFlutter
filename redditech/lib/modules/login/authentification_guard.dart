@@ -7,7 +7,7 @@ class IsAuthenticateGuard extends RouteGuard {
   
   @override
   Future<bool> canActivate(String path, ModularRoute route) async {
-    return Modular.get<UserRepository>().isLogged;
+    return Modular.get<UserRepository>().isLoggedIn();
   }
 }
 
@@ -16,6 +16,6 @@ class IsNotAuthenticatedGuard extends RouteGuard {
 
   @override
   Future<bool> canActivate(String path, ModularRoute route) async {
-    return !(await Modular.get<UserRepository>().isLogged);
+    return !(await Modular.get<UserRepository>().isLoggedIn());
   }
 }

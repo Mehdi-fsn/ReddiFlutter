@@ -53,6 +53,19 @@
             android:name="flutterEmbedding"
             android:value="2" />
 
+        <activity
+            android:name="com.linusu.flutter_web_auth.CallbackActivity"
+            android:exported="true" >
+            <intent-filter android:label="flutter_web_auth" >
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="foobar" />
+            </intent-filter>
+        </activity>
+
         <uses-library
             android:name="androidx.window.extensions"
             android:required="false" />

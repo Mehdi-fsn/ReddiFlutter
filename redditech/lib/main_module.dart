@@ -31,7 +31,7 @@ class AppModule extends Module {
           child: (BuildContext context, _) {
             return const SizedBox(
               child: Center(
-                child: Text("404"),
+                child: Text("404 Not Found"),
               ),
             );
           },

@@ -56,18 +56,31 @@
 53            android:name="flutterEmbedding"
 54            android:value="2" />
 55
-56        <uses-library
-56-->[androidx.window:window:1.0.0-beta04] /home/otsoa/.gradle/caches/transforms-3/49bc944d29f70d45aa5add8e43e3247e/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:25:9-27:40
-57            android:name="androidx.window.extensions"
-57-->[androidx.window:window:1.0.0-beta04] /home/otsoa/.gradle/caches/transforms-3/49bc944d29f70d45aa5add8e43e3247e/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:26:13-54
-58            android:required="false" />
-58-->[androidx.window:window:1.0.0-beta04] /home/otsoa/.gradle/caches/transforms-3/49bc944d29f70d45aa5add8e43e3247e/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:27:13-37
-59        <uses-library
-59-->[androidx.window:window:1.0.0-beta04] /home/otsoa/.gradle/caches/transforms-3/49bc944d29f70d45aa5add8e43e3247e/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:28:9-30:40
-60            android:name="androidx.window.sidecar"
-60-->[androidx.window:window:1.0.0-beta04] /home/otsoa/.gradle/caches/transforms-3/49bc944d29f70d45aa5add8e43e3247e/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:29:13-51
-61            android:required="false" />
-61-->[androidx.window:window:1.0.0-beta04] /home/otsoa/.gradle/caches/transforms-3/49bc944d29f70d45aa5add8e43e3247e/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:30:13-37
-62    </application>
-63
-64</manifest>
+56        <activity
+57            android:name="com.linusu.flutter_web_auth.CallbackActivity"
+58            android:exported="true" >
+59            <intent-filter android:label="flutter_web_auth" >
+60                <action android:name="android.intent.action.VIEW" />
+61
+62                <category android:name="android.intent.category.DEFAULT" />
+63                <category android:name="android.intent.category.BROWSABLE" />
+64
+65                <data android:scheme="foobar" />
+66            </intent-filter>
+67        </activity>
+68
+69        <uses-library
+69-->[androidx.window:window:1.0.0-beta04] /home/otsoa/.gradle/caches/transforms-3/49bc944d29f70d45aa5add8e43e3247e/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:25:9-27:40
+70            android:name="androidx.window.extensions"
+70-->[androidx.window:window:1.0.0-beta04] /home/otsoa/.gradle/caches/transforms-3/49bc944d29f70d45aa5add8e43e3247e/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:26:13-54
+71            android:required="false" />
+71-->[androidx.window:window:1.0.0-beta04] /home/otsoa/.gradle/caches/transforms-3/49bc944d29f70d45aa5add8e43e3247e/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:27:13-37
+72        <uses-library
+72-->[androidx.window:window:1.0.0-beta04] /home/otsoa/.gradle/caches/transforms-3/49bc944d29f70d45aa5add8e43e3247e/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:28:9-30:40
+73            android:name="androidx.window.sidecar"
+73-->[androidx.window:window:1.0.0-beta04] /home/otsoa/.gradle/caches/transforms-3/49bc944d29f70d45aa5add8e43e3247e/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:29:13-51
+74            android:required="false" />
+74-->[androidx.window:window:1.0.0-beta04] /home/otsoa/.gradle/caches/transforms-3/49bc944d29f70d45aa5add8e43e3247e/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:30:13-37
+75    </application>
+76
+77</manifest>

@@ -38,7 +38,7 @@ class NavBar extends StatelessWidget {
               Modular.to.navigate(AppPath.messageScreenPath);
               break;
             case 3:
-              Modular.get<UserRepository>().logout();
+              Modular.get<UserRepository>().deleteToken();
               Modular.to.navigate(AppPath.loginScreenPath);
               break;
             default:

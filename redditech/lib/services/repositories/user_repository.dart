@@ -1,19 +1,39 @@
 import 'dart:async';
-
-import 'package:redditech/models/user_context.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserRepository {
-  UserContext? userContext;
-
   UserRepository();
 
-  /*final StreamController<bool> _loggedStreamController = StreamController<bool>();
+  // Token
+  Future<bool> isLoggedIn() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('token') != "";
+  }
 
-  Stream<bool> get loggedStream => _loggedStreamController.stream;*/
+  Future<String> getToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('token').toString();
+  }
 
-  void login() => userContext = UserContext(username: "mehdi");
+  Future<void> deleteToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('token', "");
+  }
 
-  void logout() => userContext = null;
+  Future<void> setToken(String token) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('token', token);
+  }
 
-  Future<bool> get isLogged async => (userContext) != null;
+  // Username
+  Future<void> setUsername(String username) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('username', username);
+  }
+
+  Future<String?> getUsername() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final username = prefs.getString('username');
+    return username;
+  }
 }
