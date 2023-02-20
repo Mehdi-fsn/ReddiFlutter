@@ -1,27 +1,8 @@
 {
     "logs": [
         {
-            "outputFile": "/home/otsoa/Documents/EPITECH/Projets/T-DEV-600-MPL-6-1-redditech-mehdi.fessiane/redditech/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values/values.xml",
+            "outputFile": "/home/otsoa/Documents/EPITECH/Projets/ReddiFlutter/redditech/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values/values.xml",
             "map": [
-                {
-                    "source": "/home/otsoa/Documents/EPITECH/Projets/T-DEV-600-MPL-6-1-redditech-mehdi.fessiane/redditech/android/app/src/main/res/values/styles.xml",
-                    "from": {
-                        "startLines": "3,14",
-                        "startColumns": "4,4",
-                        "startOffsets": "173,818",
-                        "endLines": "7,16",
-                        "endColumns": "12,12",
-                        "endOffsets": "476,982"
-                    },
-                    "to": {
-                        "startLines": "103,108",
-                        "startColumns": "4,4",
-                        "startOffsets": "6137,6445",
-                        "endLines": "107,110",
-                        "endColumns": "12,12",
-                        "endOffsets": "6440,6609"
-                    }
-                },
                 {
                     "source": "/home/otsoa/.gradle/caches/transforms-3/2efeb32dcb56b0d2799ab543d25b1181/transformed/browser-1.3.0/res/values/values.xml",
                     "from": {
@@ -37,6 +18,25 @@
                         "startOffsets": "611,669,735,798,992,1063,5783,5851,5918,5997",
                         "endColumns": "57,65,62,61,70,71,67,66,78,68",
                         "endOffsets": "664,730,793,855,1058,1130,5846,5913,5992,6061"
+                    }
+                },
+                {
+                    "source": "/home/otsoa/Documents/EPITECH/Projets/ReddiFlutter/redditech/android/app/src/main/res/values/styles.xml",
+                    "from": {
+                        "startLines": "3,14",
+                        "startColumns": "4,4",
+                        "startOffsets": "173,818",
+                        "endLines": "7,16",
+                        "endColumns": "12,12",
+                        "endOffsets": "476,982"
+                    },
+                    "to": {
+                        "startLines": "103,108",
+                        "startColumns": "4,4",
+                        "startOffsets": "6137,6445",
+                        "endLines": "107,110",
+                        "endColumns": "12,12",
+                        "endOffsets": "6440,6609"
                     }
                 },
                 {

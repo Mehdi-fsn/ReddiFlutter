@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "/home/otsoa/Documents/EPITECH/Projets/T-DEV-600-MPL-6-1-redditech-mehdi.fessiane/redditech/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-si/values-si.xml",
+            "outputFile": "/home/otsoa/Documents/EPITECH/Projets/ReddiFlutter/redditech/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-si/values-si.xml",
             "map": [
                 {
                     "source": "/home/otsoa/.gradle/caches/transforms-3/acbce933e4b464a5224ed377a62db1f5/transformed/core-1.6.0/res/values-si/values-si.xml",

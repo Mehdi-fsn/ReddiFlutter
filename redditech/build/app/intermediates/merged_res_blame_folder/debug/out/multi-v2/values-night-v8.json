@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "/home/otsoa/Documents/EPITECH/Projets/T-DEV-600-MPL-6-1-redditech-mehdi.fessiane/redditech/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-night-v8/values-night-v8.xml",
+            "outputFile": "/home/otsoa/Documents/EPITECH/Projets/ReddiFlutter/redditech/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-night-v8/values-night-v8.xml",
             "map": [
                 {
-                    "source": "/home/otsoa/Documents/EPITECH/Projets/T-DEV-600-MPL-6-1-redditech-mehdi.fessiane/redditech/android/app/src/main/res/values-night/styles.xml",
+                    "source": "/home/otsoa/Documents/EPITECH/Projets/ReddiFlutter/redditech/android/app/src/main/res/values-night/styles.xml",
                     "from": {
                         "startLines": "3,14",
                         "startColumns": "4,4",
