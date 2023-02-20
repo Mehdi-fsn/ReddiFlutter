@@ -1,0 +1,4 @@
+#Mon Feb 20 09:24:20 CET 2023
+base.0=/home/otsoa/Documents/EPITECH/Projets/T-DEV-600-MPL-6-1-redditech-mehdi.fessiane/redditech/build/app/intermediates/dex/debug/mergeDexDebug/classes.dex
+path.0=classes.dex
+renamed.0=classes.dex
