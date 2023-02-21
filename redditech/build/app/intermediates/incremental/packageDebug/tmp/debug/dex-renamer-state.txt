@@ -1,4 +1,0 @@
-#Mon Feb 20 21:34:44 CET 2023
-base.0=/home/otsoa/Documents/EPITECH/Projets/ReddiFlutter/redditech/build/app/intermediates/dex/debug/mergeDexDebug/classes.dex
-path.0=classes.dex
-renamed.0=classes.dex
