@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:redditech/constants/app_path.dart';
+import 'package:redditech/constants/app_theme.dart';
 import 'package:redditech/services/repositories/user_repository.dart';
 
 class NavBar extends StatelessWidget {
@@ -17,7 +18,7 @@ class NavBar extends StatelessWidget {
     return Scaffold(
       body: _body,
       bottomNavigationBar: ConvexAppBar(
-        backgroundColor: Colors.orange,
+        backgroundColor: AppTheme.primary,
         activeColor: Colors.white,
         items: const [
           TabItem(icon: Icons.home, title: 'Home'),
@@ -26,7 +27,7 @@ class NavBar extends StatelessWidget {
           TabItem(icon: Icons.logout, title: 'Logout'),
         ],
         initialActiveIndex: _selectedIndex,
-        onTap: (int index) {
+        onTap: (int index) async {
           switch (index) {
             case 0:
               Modular.to.navigate(AppPath.homeScreenPath);
@@ -38,7 +39,7 @@ class NavBar extends StatelessWidget {
               Modular.to.navigate(AppPath.messageScreenPath);
               break;
             case 3:
-              Modular.get<UserRepository>().deleteToken();
+              await Modular.get<UserRepository>().deleteToken();
               Modular.to.navigate(AppPath.loginScreenPath);
               break;
             default:

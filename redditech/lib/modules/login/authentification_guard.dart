@@ -12,7 +12,7 @@ class IsAuthenticateGuard extends RouteGuard {
 }
 
 class IsNotAuthenticatedGuard extends RouteGuard {
-  IsNotAuthenticatedGuard() : super(redirectTo: AppPath.basePath);
+  IsNotAuthenticatedGuard() : super(redirectTo: AppPath.homeScreenPath);
 
   @override
   Future<bool> canActivate(String path, ModularRoute route) async {

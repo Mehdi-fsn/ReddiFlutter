@@ -39,7 +39,7 @@ class HomeMainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const NavBar(
-      body: RouterOutlet(),
+      body: SafeArea(child: RouterOutlet()),
     );
   }
 }

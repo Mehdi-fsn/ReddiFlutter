@@ -2,12 +2,13 @@ import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserRepository {
+  late String token;
   UserRepository();
 
   // Token
   Future<bool> isLoggedIn() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('token') != "";
+    return prefs.getString('token') != null;
   }
 
   Future<String> getToken() async {
@@ -17,12 +18,14 @@ class UserRepository {
 
   Future<void> deleteToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('token', "");
+    await prefs.remove('token');
   }
 
   Future<void> setToken(String token) async {
+    this.token = token;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('token', token);
+    print('Token set to $token');
   }
 
   // Username
