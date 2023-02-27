@@ -61,8 +61,15 @@ class _ProfilTopComponentState extends State<ProfilTopComponent> {
                   const SizedBox(
                     height: 10,
                   ),
-                  DescriptionBloc(
-                    description: _description,
+                  Center(
+                    child: Text(
+                      _description,
+                      style: const TextStyle(
+                        color: AppTheme.textColor,
+                        fontSize: 12,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 ],
               ),
@@ -265,55 +272,6 @@ class VariousInformations extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class DescriptionBloc extends StatelessWidget {
-  const DescriptionBloc({Key? key, required String? description})
-      : _description = description,
-        super(key: key);
-
-  final String? _description;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(
-          color: AppTheme.secondary,
-          width: 2,
-        ),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Text(
-              'Desription :',
-              style: TextStyle(
-                color: AppTheme.textColor,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
-            child: Text(
-              _description ?? 'No Description',
-              style: const TextStyle(
-                color: AppTheme.textColor,
-                fontSize: 15,
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
