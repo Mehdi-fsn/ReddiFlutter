@@ -1,20 +1,117 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:redditech/constants/app_path.dart';
-import 'package:redditech/services/api/authentication.dart';
+import 'package:redditech/constants/app_theme.dart';
+import 'package:redditech/services/api/authentication_api.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: ElevatedButton(
-        onPressed: () async {
-          await Authentication().authentication();
-          Modular.to.navigate(AppPath.homeScreenPath);
-        },
-        child: const Text("Login"),
+    return Container(
+      color: Colors.white,
+      child: Column(
+        children: [
+          const Banner(),
+          const SizedBox(height: 50),
+          Center(
+            child: Column(
+              children: const [
+                Text(
+                  "Explore without limits",
+                  style: TextStyle(
+                    color: AppTheme.primary,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.none,
+                  ),
+                ),
+                SizedBox(height: 20),
+                LoginButton(),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class Banner extends StatelessWidget {
+  const Banner({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Container(
+          height: 350,
+          width: double.infinity,
+          decoration: const BoxDecoration(
+              color: AppTheme.primary,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(130),
+                bottomRight: Radius.circular(130),
+              ),
+              boxShadow: [
+                AppTheme.boxShadow,
+              ]),
+        ),
+        Positioned(
+          top: 180,
+          left: MediaQuery.of(context).size.width / 2 - 110,
+          child: Container(
+            width: 220,
+            height: 220,
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+              image: DecorationImage(
+                fit: BoxFit.cover,
+                image: AssetImage('assets/reddit_app.png'),
+              ),
+              boxShadow: [
+                AppTheme.boxShadow,
+              ],
+            ),
+          ),
+        )
+      ],
+    );
+  }
+}
+
+class LoginButton extends StatelessWidget {
+  const LoginButton({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () async {
+        await AuthenticationAPI().authentication();
+        Modular.to.navigate(AppPath.homeScreenPath);
+      },
+      style: ElevatedButton.styleFrom(
+        fixedSize: const Size(200, 60),
+        backgroundColor: AppTheme.primary,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: const [
+          Icon(Icons.reddit, color: Colors.white),
+          SizedBox(width: 10),
+          Text(
+            "Continue with Reddit",
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
       ),
     );
   }
