@@ -14,22 +14,30 @@ class _ProfilTopComponentState extends State<ProfilTopComponent> {
   var _username = '';
   var _description = '';
   var _avatarUrl = '';
-  var _bannerUrl = '';
   var _suscribers = 0;
   var _totalKarma = 0;
   var _friends = 0;
 
   @override
   Widget build(BuildContext context) {
-    final reddit = RedditAPI();
     return FutureBuilder(
-      future: reddit.fetchRedditUserInfo(),
+      future: RedditAPI.fetchRedditUserInfo(),
       builder: (context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.waiting:
-            return const Center(
-              child: CircularProgressIndicator(
-                color: AppTheme.primary,
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                width: double.infinity,
+                height: 330,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Center(
+                  child: CircularProgressIndicator(
+                    color: AppTheme.secondary,
+                  ),
+                ),
               ),
             );
           default:
@@ -42,7 +50,6 @@ class _ProfilTopComponentState extends State<ProfilTopComponent> {
             _username = snapshot.data!['username'];
             _description = snapshot.data!['description'];
             _avatarUrl = snapshot.data!['avatarUrl'];
-            _bannerUrl = snapshot.data!['bannerUrl'];
             _suscribers = snapshot.data!['subscribers'];
             _totalKarma = snapshot.data!['totalKarma'] ?? 0;
             _friends = snapshot.data!['friends'] ?? 0;
@@ -54,23 +61,10 @@ class _ProfilTopComponentState extends State<ProfilTopComponent> {
                   AvatarBannerUsernameVarInfoBloc(
                       username: _username,
                       avatarUrl: _avatarUrl,
-                      bannerUrl: _bannerUrl,
                       totalKarma: _totalKarma,
                       suscribers: _suscribers,
-                      friends: _friends),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Center(
-                    child: Text(
-                      _description,
-                      style: const TextStyle(
-                        color: AppTheme.textColor,
-                        fontSize: 12,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
+                      friends: _friends,
+                      description: _description),
                 ],
               ),
             );
@@ -85,30 +79,29 @@ class AvatarBannerUsernameVarInfoBloc extends StatelessWidget {
       {Key? key,
       required String? username,
       required String? avatarUrl,
-      required String? bannerUrl,
       required int? totalKarma,
       required int? suscribers,
-      required int? friends})
+      required int? friends,
+      required String? description})
       : _friends = friends,
         _suscribers = suscribers,
         _totalKarma = totalKarma,
-        _bannerUrl = bannerUrl,
         _avatarUrl = avatarUrl,
         _username = username,
+        _description = description,
         super(key: key);
 
   final String? _username;
   final String? _avatarUrl;
-  final String? _bannerUrl;
   final int? _totalKarma;
   final int? _suscribers;
   final int? _friends;
+  final String? _description;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 280,
       decoration: BoxDecoration(
         color: AppTheme.primary,
         borderRadius: BorderRadius.circular(10),
@@ -117,7 +110,7 @@ class AvatarBannerUsernameVarInfoBloc extends StatelessWidget {
         children: [
           SizedBox(
             width: double.infinity,
-            height: 150,
+            height: 180,
             child: Stack(children: [
               Container(
                 width: double.infinity,
@@ -132,23 +125,28 @@ class AvatarBannerUsernameVarInfoBloc extends StatelessWidget {
                 child: Image.network(
                   'https://styles.redditmedia.com/t5_7wt1dz/styles/profileBanner_341ydq25s6ka1.png',
                   fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    color: AppTheme.primary,
+                  ),
                 ),
               ),
               Positioned(
-                top: 50,
+                top: 30,
                 left: (MediaQuery.of(context).size.width - 16) / 2 - 50,
                 child: SizedBox(
                   width: 100,
-                  height: 100,
-                  child: ClipRect(
-                    child: Image.network(
-                        'https://styles.redditmedia.com/t5_7wt1dz/styles/profileIcon_snooe9d6a242-02a8-47c5-8584-0fbedc6221ad-headshot.png?width=256&height=256&crop=256:256,smart&v=enabled&s=6b7f69850e5c42ed5b081b05d9665bc1aee77f1f'),
+                  height: 150,
+                  child: Image.network(
+                    _avatarUrl!,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      color: AppTheme.secondary,
+                    ),
                   ),
                 ),
               ),
             ]),
           ),
-          const SizedBox(height: 10),
           Center(
             child: Text(
               _username!,
@@ -173,6 +171,17 @@ class AvatarBannerUsernameVarInfoBloc extends StatelessWidget {
                   totalKarma: _totalKarma,
                   suscribers: _suscribers,
                   friends: _friends),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              _description!,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+              ),
+              textAlign: TextAlign.center,
             ),
           ),
         ],
