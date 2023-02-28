@@ -1,3 +1,5 @@
+import 'package:localization/localization.dart';
+
 abstract class FormatDate {
   static String toDateTime(createdUtc) {
     var dateTime =
@@ -7,7 +9,7 @@ abstract class FormatDate {
       return "${compare.inMinutes}min";
     }
     if (compare.inDays > 0) {
-      return "${compare.inDays}d ${(compare.inHours % 24)}h";
+      return "${compare.inDays}${'day'.i18n()} ${(compare.inHours % 24)}h";
     }
     return "${compare.inHours}h";
   }
