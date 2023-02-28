@@ -44,6 +44,8 @@ dependencies:
   flutter_modular: ^5.0.3
   convex_bottom_bar: ^3.2.0
   intl: ^0.18.0
+  anim_search_bar: ^2.0.3
+  flutter_typeahead: ^4.3.7
 
 dev_dependencies:
   flutter_test:

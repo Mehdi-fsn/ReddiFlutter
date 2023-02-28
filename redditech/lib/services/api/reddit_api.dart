@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:http/http.dart' as http;
 import 'package:flutter_modular/flutter_modular.dart';
@@ -26,6 +27,8 @@ class RedditAPI {
       throw Exception('Failed to load user information (/api/v1/me)');
     }
 
+    print("Success");
+
     final jsonBody = jsonDecode(response.body);
     Map<String, dynamic> res = {
       'username': jsonBody['name'],
@@ -38,6 +41,29 @@ class RedditAPI {
       'friends': jsonBody['subreddit_friends'],
     };
     return res;
+  }
+  Future<Map<String, dynamic>> fetchSubreddit(subreddit) async {
+    final token = await Modular.get<UserRepository>().getToken();
+    final url = Uri.parse('https://oauth.reddit.com/r/$subreddit');
+    final headers = {
+      'Authorization': 'Bearer $token',
+      'User-agent': RedditInfo.userAgent,
+    };
+
+
+    http.Response response = await http.get(
+      url,
+      headers: headers,
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception(
+          'Failed to load user messages');
+    }
+    final jsonBody = jsonDecode(response.body);
+    log(jsonBody.toString());
+
+    return{};
   }
 }
 
@@ -67,4 +93,5 @@ Future<Map<String, dynamic>> fetchUserPostSubmitted(username) async {
 
   return {};
 }
+
 
