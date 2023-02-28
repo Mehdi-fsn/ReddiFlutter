@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:redditech/constants/app_path.dart';
+import 'package:redditech/modules/home/home_guard.dart';
 import 'package:redditech/modules/home/home_screen.dart';
 import 'package:redditech/modules/message/message_screen.dart';
 import 'package:redditech/modules/profile/profile_screen.dart';
