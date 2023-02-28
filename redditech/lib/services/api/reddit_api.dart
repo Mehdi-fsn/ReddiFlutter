@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:flutter_modular/flutter_modular.dart';
@@ -13,10 +14,10 @@ abstract class RedditAPI {
     final token = await Modular.get<UserRepository>().getToken();
     final url = Uri.parse('https://oauth.reddit.com/api/v1/me');
     final headers = {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer $token',
-      'User-agent': RedditInfo.userAgent,
+      HttpHeaders.contentTypeHeader: 'application/json',
+      HttpHeaders.acceptHeader: 'application/json',
+      HttpHeaders.authorizationHeader: 'Bearer $token',
+      HttpHeaders.userAgentHeader: RedditInfo.userAgent,
     };
 
     http.Response response = await http.get(
@@ -48,8 +49,8 @@ abstract class RedditAPI {
     final url =
     Uri.parse('https://oauth.reddit.com/user/$username/submitted?limit=25');
     final headers = {
-      'Authorization': 'Bearer $token',
-      'User-agent': RedditInfo.userAgent,
+      HttpHeaders.authorizationHeader: 'Bearer $token',
+      HttpHeaders.userAgentHeader: RedditInfo.userAgent,
     };
 
     http.Response response = await http.get(
@@ -63,7 +64,6 @@ abstract class RedditAPI {
     }
 
     final jsonBody = jsonDecode(response.body);
-    log(jsonBody.toString());
     final List<Map<String, dynamic>> posts = [];
     for(var i = 0; i < jsonBody['data']['dist']; i++) {
 
@@ -81,9 +81,58 @@ abstract class RedditAPI {
       posts.add(post);
     }
 
-    log(posts.toString());
     return posts;
   }
 
+  static Future<Map<String, dynamic>> fetchUserPreferences() async {
+    final token = await Modular.get<UserRepository>().getToken();
+    final url = Uri.parse('https://oauth.reddit.com/api/v1/me/prefs');
+    final headers = {
+      HttpHeaders.authorizationHeader: 'Bearer $token',
+      HttpHeaders.userAgentHeader: RedditInfo.userAgent,
+    };
+
+    http.Response response = await http.get(
+      url,
+      headers: headers,
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to load user settings (/api/v1/me/prefs)');
+    }
+
+    final jsonBody = jsonDecode(response.body);
+    Map<String, dynamic> res = {
+      'lang': jsonBody['lang'],
+      'over_18': jsonBody['over_18'],
+      'allow_clicktracking': jsonBody['allow_clicktracking'],
+      'show_location_based_recommendations': jsonBody['show_location_based_recommendations'],
+    };
+
+    print(res);
+    return res;
+  }
+
+  static Future<bool> updateRedditPreferences(Map<String, dynamic> prefs) async {
+    final token = await Modular.get<UserRepository>().getToken();
+    final url = Uri.parse('https://oauth.reddit.com/api/v1/me/prefs');
+    final headers = {
+      HttpHeaders.authorizationHeader: 'Bearer $token',
+      HttpHeaders.userAgentHeader: RedditInfo.userAgent,
+      HttpHeaders.contentTypeHeader: 'application/json',
+    };
+
+    http.Response response = await http.patch(
+      url,
+      headers: headers,
+      body: jsonEncode(prefs),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to update user settings (/api/v1/me/prefs)');
+    }
+
+    return true;
+  }
 }
 

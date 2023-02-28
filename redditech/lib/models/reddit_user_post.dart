@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:localization/localization.dart';
 import 'package:redditech/constants/app_theme.dart';
 import 'package:redditech/constants/reddit_info.dart';
 import 'package:redditech/utils/extract_url.dart';
+import 'package:redditech/utils/format_number.dart';
 
 class RedditUserPost extends StatelessWidget {
   const RedditUserPost(
@@ -47,9 +49,11 @@ class RedditUserPost extends StatelessWidget {
             children: [
               Expanded(
                 flex: 1,
-                child: Image.network(thumbnail != "self"
-                    ? thumbnail
-                    : RedditInfo.urlRedditCharacter),
+                child: Image.network(
+                  thumbnail,
+                  errorBuilder: (context, error, stackTrace) =>
+                      Image.network(RedditInfo.urlRedditCharacter),
+                ),
               ),
               const SizedBox(width: 8),
               Expanded(
@@ -63,7 +67,7 @@ class RedditUserPost extends StatelessWidget {
                           fontSize: 12, fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      'Posted by $author - $createdUtc ago',
+                      'posted-by-ago'.i18n([author, createdUtc]),
                       style: TextStyle(
                         fontSize: 10,
                         color: Colors.grey.shade600,
@@ -79,7 +83,10 @@ class RedditUserPost extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SelfText(selfText: selfText),
+                    SelfText(
+                        selfText: selfText,
+                        score: score,
+                        numComments: numComments),
                   ],
                 ),
               ),
@@ -92,9 +99,16 @@ class RedditUserPost extends StatelessWidget {
 }
 
 class SelfText extends StatefulWidget {
-  const SelfText({Key? key, required this.selfText}) : super(key: key);
+  const SelfText(
+      {Key? key,
+      required this.selfText,
+      required this.score,
+      required this.numComments})
+      : super(key: key);
 
   final String selfText;
+  final int score;
+  final int numComments;
 
   @override
   State<SelfText> createState() => _SelfTextState();
@@ -126,7 +140,11 @@ class _SelfTextState extends State<SelfText> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          _isMoreThan100 ? _isExpanded ? _text : '${_text.substring(0, 100)}...' : _text,
+          _isMoreThan100
+              ? _isExpanded
+                  ? _text
+                  : '${_text.substring(0, 100)}...'
+              : _text,
           style: const TextStyle(
             fontSize: 12,
           ),
@@ -141,22 +159,64 @@ class _SelfTextState extends State<SelfText> {
                 width: double.infinity,
               ),
             ),
-        _isMoreThan100
-            ? TextButton(
+        if (!_isMoreThan100) const SizedBox(height: 7),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  Icons.arrow_upward,
+                  size: 13,
+                  color: Colors.grey.shade600,
+                ),
+                Icon(
+                  Icons.arrow_downward,
+                  size: 13,
+                  color: Colors.grey.shade600,
+                ),
+                const SizedBox(width: 5),
+                Text(
+                  FormatNumber.formatNumber(widget.score),
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Icon(
+                  Icons.comment,
+                  size: 13,
+                  color: Colors.grey.shade600,
+                ),
+                const SizedBox(width: 5),
+                Text(
+                  '${widget.numComments} ${'comments'.i18n()} ${widget.numComments > 1 ? 's' : ''}',
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
+              ],
+            ),
+            if (_isMoreThan100)
+              TextButton(
                 onPressed: () {
                   setState(() {
                     _isExpanded = !_isExpanded;
                   });
                 },
                 child: Text(
-                  _isExpanded ? 'Show less' : 'Show more',
+                  _isExpanded ? 'show-less'.i18n() : 'show-more'.i18n(),
                   style: const TextStyle(
                     color: AppTheme.primary,
                     fontSize: 10,
                   ),
                 ),
-              )
-            : const SizedBox.shrink(),
+              ),
+          ],
+        ),
+        if (!_isMoreThan100) const SizedBox(height: 7),
       ],
     );
   }

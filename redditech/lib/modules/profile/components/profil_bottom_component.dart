@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localization/localization.dart';
 
 import 'package:redditech/constants/app_theme.dart';
 import 'package:redditech/models/reddit_user_post.dart';
 import 'package:redditech/services/api/reddit_api.dart';
+import 'package:redditech/services/localization/localization_bloc.dart';
 
 class ProfileBottomComponent extends StatefulWidget {
   const ProfileBottomComponent({Key? key}) : super(key: key);
@@ -43,7 +46,7 @@ class _ProfileBottomComponentState extends State<ProfileBottomComponent> {
                       });
                     },
                     child: Text(
-                      'Posts',
+                      'posts'.i18n(),
                       style: TextStyle(
                           color: _tabController == 0
                               ? AppTheme.primary
@@ -69,7 +72,7 @@ class _ProfileBottomComponentState extends State<ProfileBottomComponent> {
                       });
                     },
                     child: Text(
-                      'Settings',
+                      'settings'.i18n(),
                       style: TextStyle(
                           color: _tabController == 1
                               ? AppTheme.primary
@@ -84,12 +87,9 @@ class _ProfileBottomComponentState extends State<ProfileBottomComponent> {
           // IndexedStack allow to display only one widget at a time without rebuilding the other
           IndexedStack(
             index: _tabController,
-            children: [
-              const ListUserPost(),
-              Container(
-                  height: 100,
-                  color: AppTheme.secondary,
-                  child: const Text('Contenu de la vue 2')),
+            children: const [
+              ListUserPost(),
+              Settings(),
             ],
           ),
         ],
@@ -119,11 +119,10 @@ class ListUserPost extends StatelessWidget {
               );
             default:
               if (snapshot.data!.isEmpty) {
-                return const Center(
+                return Center(
                   child: Text(
-                    'No post found',
-                    style: TextStyle(
-                      color: AppTheme.textColor,
+                    'no-post-found'.i18n(),
+                    style: const TextStyle(
                       fontSize: 20,
                     ),
                   ),
@@ -144,6 +143,149 @@ class ListUserPost extends StatelessWidget {
                     score: snapshot.data![index]["score"],
                     numComments: snapshot.data![index]["numComments"],
                     createdUtc: snapshot.data![index]["createdUtc"],
+                  );
+                },
+              );
+          }
+        });
+  }
+}
+
+class Settings extends StatefulWidget {
+  const Settings({Key? key}) : super(key: key);
+
+  @override
+  State<Settings> createState() => _SettingsState();
+}
+
+class _SettingsState extends State<Settings> {
+  late String _lang;
+  late bool _over18;
+  late bool _allowClicktracking;
+  late bool _showLocationBasedRecommendations;
+
+  late bool _isUpdating;
+
+  @override
+  void initState() {
+    super.initState();
+    _isUpdating = false;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+        future: RedditAPI.fetchUserPreferences(),
+        builder: (BuildContext context,
+            AsyncSnapshot<Map<String, dynamic>> snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.waiting:
+              return const SizedBox(
+                height: 300,
+                child: Center(
+                  child: CircularProgressIndicator(
+                    color: AppTheme.secondary,
+                  ),
+                ),
+              );
+            default:
+              if (!_isUpdating) {
+                _lang = snapshot.data!['lang'];
+                _over18 = snapshot.data!['over_18'];
+                _allowClicktracking = snapshot.data!['allow_clicktracking'];
+                _showLocationBasedRecommendations =
+                    snapshot.data!['show_location_based_recommendations'];
+              }
+
+              return BlocBuilder<LocalizationBloc, LocalizationState>(
+                builder: (context, state) {
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 20.0),
+                    child: Center(
+                      child: SizedBox(
+                        width: 300,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              width: 270,
+                              child: DropdownButtonFormField(
+                                value: _lang,
+                                items: [
+                                  DropdownMenuItem(
+                                    value: 'en',
+                                    child: Text('english'.i18n()),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: 'fr',
+                                    child: Text('french'.i18n()),
+                                  ),
+                                ],
+                                onChanged: (value) {
+                                  RedditAPI.updateRedditPreferences(
+                                      {'lang': value});
+
+                                  if(value != _lang && value == 'en') {
+                                    BlocProvider.of<LocalizationBloc>(context).add(const LocalizationChangedEvent(locale: Locale('en', 'US')));
+                                  }
+                                  if(value != _lang && value == 'fr') {
+                                    BlocProvider.of<LocalizationBloc>(context).add(const LocalizationChangedEvent(locale: Locale('fr', 'FR')));
+                                  }
+                                },
+                              ),
+                            ),
+                            SwitchListTile(
+                              title: Text('over-18'.i18n()),
+                              activeColor: AppTheme.secondary,
+                              value: _over18,
+                              onChanged: (value) async {
+                                setState(() {
+                                  _isUpdating = true;
+                                  _over18 = value;
+                                });
+                                await RedditAPI.updateRedditPreferences(
+                                    {'over_18': _over18});
+                                setState(() {
+                                  _isUpdating = false;
+                                });
+                              },
+                            ),
+                            SwitchListTile(
+                              title: Text('allow-clicktracking'.i18n()),
+                              activeColor: AppTheme.secondary,
+                              value: _allowClicktracking,
+                              onChanged: (value) async {
+                                setState(() {
+                                  _isUpdating = true;
+                                  _allowClicktracking = value;
+                                });
+                                await RedditAPI.updateRedditPreferences(
+                                    {'allow_clicktracking': _allowClicktracking});
+                                setState(() {
+                                  _isUpdating = false;
+                                });
+                              },
+                            ),
+                            SwitchListTile(
+                              title: Text('show-location-based-recommendations'.i18n()),
+                              activeColor: AppTheme.secondary,
+                              value: _showLocationBasedRecommendations,
+                              onChanged: (value) async {
+                                setState(() {
+                                  _isUpdating = true;
+                                  _showLocationBasedRecommendations = value;
+                                });
+                                await RedditAPI.updateRedditPreferences(
+                                    {'show_location_based_recommendations': _showLocationBasedRecommendations});
+                                setState(() {
+                                  _isUpdating = false;
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   );
                 },
               );

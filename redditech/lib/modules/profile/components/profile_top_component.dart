@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:localization/localization.dart';
 
 import 'package:redditech/constants/app_theme.dart';
+import 'package:redditech/constants/reddit_info.dart';
 import 'package:redditech/services/api/reddit_api.dart';
 
 class ProfilTopComponent extends StatefulWidget {
@@ -43,7 +45,7 @@ class _ProfilTopComponentState extends State<ProfilTopComponent> {
           default:
             if (snapshot.hasError) {
               return Center(
-                child: Text('Loading error: ${snapshot.error}'),
+                child: Text('${'loading-error'.i18n()} : ${snapshot.error}'),
               );
             }
 
@@ -123,7 +125,7 @@ class AvatarBannerUsernameVarInfoBloc extends StatelessWidget {
                 ),
                 clipBehavior: Clip.antiAliasWithSaveLayer,
                 child: Image.network(
-                  'https://styles.redditmedia.com/t5_7wt1dz/styles/profileBanner_341ydq25s6ka1.png',
+                  RedditInfo.urlBanner,
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) => Container(
                     color: AppTheme.primary,
@@ -214,9 +216,9 @@ class VariousInformations extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text(
-                'Total karma',
-                style: TextStyle(fontSize: 10),
+              Text(
+                'total-karma'.i18n(),
+                style: const TextStyle(fontSize: 10),
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 5),
@@ -240,9 +242,9 @@ class VariousInformations extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text(
-                'Suscribers',
-                style: TextStyle(fontSize: 10),
+              Text(
+                'suscribers'.i18n(),
+                style: const TextStyle(fontSize: 10),
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 5),
@@ -266,9 +268,9 @@ class VariousInformations extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text(
-                'Friends',
-                style: TextStyle(fontSize: 10),
+              Text(
+                'friends'.i18n(),
+                style: const TextStyle(fontSize: 10),
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 5),
