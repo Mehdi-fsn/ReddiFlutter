@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localization/localization.dart';
 
 import 'package:redditech/constants/app_theme.dart';
-import 'package:redditech/models/reddit_user_post.dart';
+import 'package:redditech/models/reddit_post.dart';
 import 'package:redditech/services/api/reddit_api.dart';
-import 'package:redditech/services/localization/localization_bloc.dart';
+import 'package:redditech/services/bloc/localization/localization_bloc.dart';
 
 class ProfileBottomComponent extends StatefulWidget {
   const ProfileBottomComponent({Key? key}) : super(key: key);
@@ -134,7 +134,7 @@ class ListUserPost extends StatelessWidget {
                 primary: false, // to disable the scroll
                 itemCount: snapshot.data!.length,
                 itemBuilder: (context, index) {
-                  return RedditUserPost(
+                  return RedditPost(
                     subreddit: snapshot.data![index]["subreddit"],
                     author: snapshot.data![index]["author"],
                     title: snapshot.data![index]["title"],

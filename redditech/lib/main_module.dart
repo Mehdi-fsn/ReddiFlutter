@@ -9,7 +9,7 @@ import 'package:redditech/constants/app_theme.dart';
 import 'package:redditech/modules/home_module.dart';
 import 'package:redditech/modules/login/authentification_guard.dart';
 import 'package:redditech/modules/login/login_screen.dart';
-import 'package:redditech/services/localization/localization_bloc.dart';
+import 'package:redditech/services/bloc/localization/localization_bloc.dart';
 import 'package:redditech/services/repositories/user_repository.dart';
 
 class AppModule extends Module {

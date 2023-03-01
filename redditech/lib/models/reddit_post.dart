@@ -5,8 +5,8 @@ import 'package:redditech/constants/reddit_info.dart';
 import 'package:redditech/utils/extract_url.dart';
 import 'package:redditech/utils/format_number.dart';
 
-class RedditUserPost extends StatelessWidget {
-  const RedditUserPost(
+class RedditPost extends StatelessWidget {
+  const RedditPost(
       {Key? key,
       required this.subreddit,
       required this.author,
@@ -191,7 +191,7 @@ class _SelfTextState extends State<SelfText> {
                 ),
                 const SizedBox(width: 5),
                 Text(
-                  '${widget.numComments} ${'comments'.i18n()} ${widget.numComments > 1 ? 's' : ''}',
+                  '${widget.numComments} ${'comments'.i18n()}${widget.numComments > 1 ? 's' : ''}',
                   style: TextStyle(
                     fontSize: 13,
                     color: Colors.grey.shade600,
