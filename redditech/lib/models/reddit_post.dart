@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:localization/localization.dart';
+import 'package:redditech/constants/app_path.dart';
 import 'package:redditech/constants/app_theme.dart';
 import 'package:redditech/constants/reddit_info.dart';
 import 'package:redditech/utils/extract_url.dart';
@@ -61,10 +63,16 @@ class RedditPost extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      subreddit,
-                      style: const TextStyle(
-                          fontSize: 12, fontWeight: FontWeight.bold),
+                    GestureDetector(
+                      onTap: () {
+                        var name = subreddit.split('/')[1];
+                        Modular.to.pushNamed('${AppPath.subredditScreenPath}/$name');
+                      },
+                      child: Text(
+                        subreddit,
+                        style: const TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.bold),
+                      ),
                     ),
                     Text(
                       'posted-by-ago'.i18n([author, createdUtc]),

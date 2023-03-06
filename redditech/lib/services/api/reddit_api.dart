@@ -38,7 +38,6 @@ abstract class RedditAPI {
       'preferences': jsonBody['pref'],
       'friends': jsonBody['subreddit_friends'],
     };
-    print(res);
     return res;
   }
 
@@ -110,7 +109,6 @@ abstract class RedditAPI {
           jsonBody['show_location_based_recommendations'],
     };
 
-    print(res);
     return res;
   }
 
@@ -142,9 +140,9 @@ abstract class RedditAPI {
     final token = await Modular.get<UserRepository>().getToken();
     Uri url;
     if (subreddit != null) {
-      url = Uri.parse('https://oauth.reddit.com/$subreddit/$type?limit=50');
+      url = Uri.parse('https://oauth.reddit.com/$subreddit/$type?limit=25');
     } else {
-      url = Uri.parse('https://oauth.reddit.com/$type?limit=50');
+      url = Uri.parse('https://oauth.reddit.com/$type?limit=25');
     }
     final headers = {
       HttpHeaders.authorizationHeader: 'Bearer $token',
@@ -155,7 +153,6 @@ abstract class RedditAPI {
       url,
       headers: headers,
     );
-
     if (response.statusCode != 200) {
       throw Exception('Failed to load user posts (/hot|new|top|best)');
     }
@@ -180,5 +177,43 @@ abstract class RedditAPI {
     }
 
     return posts;
+  }
+
+  static Future<Map<String, dynamic>> fetchInfoSubreddit(
+      {required String subredditName}) async {
+    final token = await Modular.get<UserRepository>().getToken();
+    final url = Uri.parse('https://oauth.reddit.com/r/$subredditName/about');
+    final headers = {
+      HttpHeaders.authorizationHeader: 'Bearer $token',
+      HttpHeaders.userAgentHeader: RedditInfo.userAgent,
+    };
+
+    http.Response response = await http.get(
+      url,
+      headers: headers,
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to load subreddit info (/r/$subredditName/about)');
+    }
+
+    final jsonBody = jsonDecode(response.body);
+    var dataIcon;
+    if(jsonBody['data']['icon_img'] == ''){
+      dataIcon = 'community_icon';
+    } else {
+      dataIcon = 'icon_img';
+    }
+    Map<String, dynamic> res = {
+      'display_name_prefixed': jsonBody['data']['display_name_prefixed'],
+      'subscribers': jsonBody['data']['subscribers'],
+      'public_description': jsonBody['data']['public_description'],
+      'created_utc': jsonBody['data']['created_utc'],
+      'user_is_subscriber': jsonBody['data']['user_is_subscriber'],
+      'icon_img': jsonBody['data'][dataIcon].replaceAll('amp;', ''),
+      'banner_background_image': jsonBody['data']['banner_background_image'].replaceAll('amp;', ''),
+    };
+
+    return res;
   }
 }

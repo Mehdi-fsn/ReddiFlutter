@@ -1,6 +1,5 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
+
 import 'package:redditech/constants/app_theme.dart';
 import 'package:redditech/models/reddit_post.dart';
 import 'package:redditech/services/api/reddit_api.dart';
@@ -38,129 +37,127 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 SizedBox(
                   width: double.infinity,
-                  child: Expanded(
-                    child: Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          TextButton(
-                            onPressed: () {
-                              setState(() {
-                                _type = 'hot';
-                              });
-                            },
-                            style: ButtonStyle(
-                              shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(18.0),
-                                  side: BorderSide(
-                                    color: (_type == 'hot')
-                                        ? Colors.white
-                                        : Colors.transparent,
-                                  ),
+                  child: Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            setState(() {
+                              _type = 'hot';
+                            });
+                          },
+                          style: ButtonStyle(
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18.0),
+                                side: BorderSide(
+                                  color: (_type == 'hot')
+                                      ? Colors.white
+                                      : Colors.transparent,
                                 ),
                               ),
                             ),
-                            child: Text(
-                              'Hot',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w700,
-                                color: (_type == 'hot')
-                                    ? Colors.white
-                                    : AppTheme.textColor,
-                              ),
+                          ),
+                          child: Text(
+                            'Hot',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              color: (_type == 'hot')
+                                  ? Colors.white
+                                  : AppTheme.textColor,
                             ),
                           ),
-                          TextButton(
-                            onPressed: () {
-                              setState(() {
-                                _type = 'new';
-                              });
-                            },
-                            style: ButtonStyle(
-                              shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(18.0),
-                                  side: BorderSide(
-                                    color: (_type == 'new')
-                                        ? Colors.white
-                                        : Colors.transparent,
-                                  ),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            setState(() {
+                              _type = 'new';
+                            });
+                          },
+                          style: ButtonStyle(
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18.0),
+                                side: BorderSide(
+                                  color: (_type == 'new')
+                                      ? Colors.white
+                                      : Colors.transparent,
                                 ),
                               ),
                             ),
-                            child: Text(
-                              'New',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w700,
-                                color: (_type == 'new')
-                                    ? Colors.white
-                                    : AppTheme.textColor,
-                              ),
+                          ),
+                          child: Text(
+                            'New',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              color: (_type == 'new')
+                                  ? Colors.white
+                                  : AppTheme.textColor,
                             ),
                           ),
-                          TextButton(
-                            onPressed: () {
-                              setState(() {
-                                _type = 'top';
-                              });
-                            },
-                            style: ButtonStyle(
-                              shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(18.0),
-                                  side: BorderSide(
-                                    color: (_type == 'top')
-                                        ? Colors.white
-                                        : Colors.transparent,
-                                  ),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            setState(() {
+                              _type = 'top';
+                            });
+                          },
+                          style: ButtonStyle(
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18.0),
+                                side: BorderSide(
+                                  color: (_type == 'top')
+                                      ? Colors.white
+                                      : Colors.transparent,
                                 ),
                               ),
                             ),
-                            child: Text(
-                              'Top',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w700,
-                                color: (_type == 'top')
-                                    ? Colors.white
-                                    : AppTheme.textColor,
-                              ),
+                          ),
+                          child: Text(
+                            'Top',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              color: (_type == 'top')
+                                  ? Colors.white
+                                  : AppTheme.textColor,
                             ),
                           ),
-                          TextButton(
-                            onPressed: () {
-                              setState(() {
-                                _type = 'rising';
-                              });
-                            },
-                            style: ButtonStyle(
-                              shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(18.0),
-                                  side: BorderSide(
-                                    color: (_type == 'rising')
-                                        ? Colors.white
-                                        : Colors.transparent,
-                                  ),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            setState(() {
+                              _type = 'rising';
+                            });
+                          },
+                          style: ButtonStyle(
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18.0),
+                                side: BorderSide(
+                                  color: (_type == 'rising')
+                                      ? Colors.white
+                                      : Colors.transparent,
                                 ),
                               ),
                             ),
-                            child: Text(
-                              'Rising',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w700,
-                                color: (_type == 'rising')
-                                    ? Colors.white
-                                    : AppTheme.textColor,
-                              ),
+                          ),
+                          child: Text(
+                            'Rising',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              color: (_type == 'rising')
+                                  ? Colors.white
+                                  : AppTheme.textColor,
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -177,6 +174,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: 500,
                       child: Center(child: CircularProgressIndicator()));
                 default:
+                  if(snapshot.hasError) {
+                    const Center(child:Text('Error loading'));
+                  }
                   return Expanded(
                     child: ListView.builder(
                       shrinkWrap: true,
