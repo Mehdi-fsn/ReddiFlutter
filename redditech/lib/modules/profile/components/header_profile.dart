@@ -5,14 +5,14 @@ import 'package:redditech/constants/app_theme.dart';
 import 'package:redditech/constants/reddit_info.dart';
 import 'package:redditech/services/api/reddit_api.dart';
 
-class ProfilTopComponent extends StatefulWidget {
-  const ProfilTopComponent({Key? key}) : super(key: key);
+class HeaderProfile extends StatefulWidget {
+  const HeaderProfile({Key? key}) : super(key: key);
 
   @override
-  State<ProfilTopComponent> createState() => _ProfilTopComponentState();
+  State<HeaderProfile> createState() => _HeaderProfileState();
 }
 
-class _ProfilTopComponentState extends State<ProfilTopComponent> {
+class _HeaderProfileState extends State<HeaderProfile> {
   var _username = '';
   var _description = '';
   var _avatarUrl = '';

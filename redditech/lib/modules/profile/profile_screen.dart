@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:redditech/modules/profile/components/profil_bottom_component.dart';
-import 'package:redditech/modules/profile/components/profile_top_component.dart';
+import 'package:redditech/modules/profile/components/body_profil.dart';
+import 'package:redditech/modules/profile/components/header_profile.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -11,8 +11,8 @@ class ProfileScreen extends StatelessWidget {
     return SingleChildScrollView(
       child: Column(
         children: const [
-          ProfilTopComponent(),
-          ProfileBottomComponent(),
+          HeaderProfile(),
+          BodyProfile(),
         ],
       ),
     );

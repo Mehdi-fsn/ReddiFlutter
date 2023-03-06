@@ -7,14 +7,14 @@ import 'package:redditech/models/reddit_post.dart';
 import 'package:redditech/services/api/reddit_api.dart';
 import 'package:redditech/services/bloc/localization/localization_bloc.dart';
 
-class ProfileBottomComponent extends StatefulWidget {
-  const ProfileBottomComponent({Key? key}) : super(key: key);
+class BodyProfile extends StatefulWidget {
+  const BodyProfile({Key? key}) : super(key: key);
 
   @override
-  State<ProfileBottomComponent> createState() => _ProfileBottomComponentState();
+  State<BodyProfile> createState() => _BodyProfileState();
 }
 
-class _ProfileBottomComponentState extends State<ProfileBottomComponent> {
+class _BodyProfileState extends State<BodyProfile> {
   int _tabController = 0;
 
   @override

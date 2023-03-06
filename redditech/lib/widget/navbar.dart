@@ -12,7 +12,7 @@ class NavBar extends StatelessWidget {
         super(key: key);
 
   final Widget _body;
-  final int _selectedIndex = 0;
+  final int _selectedIndex = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -22,24 +22,20 @@ class NavBar extends StatelessWidget {
         backgroundColor: AppTheme.primary,
         activeColor: Colors.white,
         items: [
-          TabItem(icon: Icons.home, title: 'home'.i18n()),
           TabItem(icon: Icons.settings, title: 'profile'.i18n()),
-          const TabItem(icon: Icons.message, title: 'Message'),
+          TabItem(icon: Icons.home, title: 'home'.i18n()),
           TabItem(icon: Icons.logout, title: 'logout'.i18n()),
         ],
         initialActiveIndex: _selectedIndex,
         onTap: (int index) async {
           switch (index) {
             case 0:
-              Modular.to.navigate(AppPath.homeScreenPath);
-              break;
-            case 1:
               Modular.to.navigate(AppPath.profileScreenPath);
               break;
-            case 2:
-              Modular.to.navigate(AppPath.messageScreenPath);
+            case 1:
+              Modular.to.navigate(AppPath.homeScreenPath);
               break;
-            case 3:
+            case 2:
               await Modular.get<UserRepository>().deleteToken();
               Modular.to.navigate(AppPath.loginScreenPath);
               break;
