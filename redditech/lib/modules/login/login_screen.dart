@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:localization/localization.dart';
 import 'package:redditech/constants/app_path.dart';
 import 'package:redditech/constants/app_theme.dart';
 import 'package:redditech/services/api/authentication_api.dart';
@@ -17,18 +18,18 @@ class LoginScreen extends StatelessWidget {
           const SizedBox(height: 50),
           Center(
             child: Column(
-              children: const [
+              children: [
                 Text(
-                  "Explore without limits",
-                  style: TextStyle(
+                  'eplore-without-limits'.i18n(),
+                  style: const TextStyle(
                     color: AppTheme.primary,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                     decoration: TextDecoration.none,
                   ),
                 ),
-                SizedBox(height: 20),
-                LoginButton(),
+                const SizedBox(height: 20),
+                const LoginButton(),
               ],
             ),
           ),
@@ -56,7 +57,7 @@ class Banner extends StatelessWidget {
               ),
               boxShadow: [
                 AppTheme.boxShadow,
-              ]),
+                    ]),
         ),
         Positioned(
           top: 180,
