@@ -8,6 +8,8 @@ import 'package:redditech/constants/reddit_info.dart';
 import 'package:redditech/utils/format_date.dart';
 import 'package:redditech/services/repositories/user_repository.dart';
 
+import '../../models/reddit_sub.dart';
+
 abstract class RedditAPI {
   static Future<Map<String, dynamic>> fetchRedditUserInfo() async {
     final token = await Modular.get<UserRepository>().getToken();
@@ -82,6 +84,33 @@ abstract class RedditAPI {
 
     return posts;
   }
+
+  static Future<List<RedditSub>> fetchSubreddit(String subreddit) async {
+    final token = await Modular.get<UserRepository>().getToken();
+    final url = Uri.parse('https://oauth.reddit.com/api/subreddit_autocomplete?query=$subreddit');
+        log(url.toString());
+    final headers = {
+    'Authorization': 'Bearer $token',
+    'User-agent': RedditInfo.userAgent,
+    };
+    http.Response response = await http.get(
+    url,
+    headers: headers,
+    );
+
+    if (response.statusCode != 200) {
+    log(response.body);
+    log(response.statusCode.toString());
+    throw Exception(
+    'Failed to load user messages');
+    }
+    final subreddits = jsonDecode(response.body);
+    final listResult = List<RedditSub>.from(subreddits["subreddits"].map((subreddit) {
+    return RedditSub.fromJson(subreddit);
+    }).toList());
+    log(listResult.toString());
+    return listResult;
+    }
 
   static Future<Map<String, dynamic>> fetchUserPreferences() async {
     final token = await Modular.get<UserRepository>().getToken();
