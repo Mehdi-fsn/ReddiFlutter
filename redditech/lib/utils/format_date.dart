@@ -13,4 +13,10 @@ abstract class FormatDate {
     }
     return "${compare.inHours}h";
   }
+
+  static String exactDate(createdUtc) {
+    var dateTime =
+        DateTime.fromMillisecondsSinceEpoch(createdUtc.round() * 1000);
+    return "${(dateTime.day < 10) ? '0${dateTime.day}' : dateTime.day}/${(dateTime.month < 10) ? '0${dateTime.month}' : dateTime.month}/${dateTime.year}";
+  }
 }

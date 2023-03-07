@@ -135,12 +135,12 @@ abstract class RedditAPI {
     return true;
   }
 
-  static Future<List<Map<String, dynamic>>> fetchSubReddit(
+  static Future<List<Map<String, dynamic>>> fetchPostsSubreddit(
       {required String type, String? subreddit}) async {
     final token = await Modular.get<UserRepository>().getToken();
     Uri url;
     if (subreddit != null) {
-      url = Uri.parse('https://oauth.reddit.com/$subreddit/$type?limit=25');
+      url = Uri.parse('https://oauth.reddit.com/r/$subreddit/$type?limit=25');
     } else {
       url = Uri.parse('https://oauth.reddit.com/$type?limit=25');
     }
@@ -148,7 +148,6 @@ abstract class RedditAPI {
       HttpHeaders.authorizationHeader: 'Bearer $token',
       HttpHeaders.userAgentHeader: RedditInfo.userAgent,
     };
-
     http.Response response = await http.get(
       url,
       headers: headers,
@@ -213,7 +212,34 @@ abstract class RedditAPI {
       'icon_img': jsonBody['data'][dataIcon].replaceAll('amp;', ''),
       'banner_background_image': jsonBody['data']['banner_background_image'].replaceAll('amp;', ''),
     };
-
+    print(res['user_is_subscriber']);
     return res;
+  }
+
+  static Future<bool> changeSubbed(bool userIsSubscriber, String name) async {
+    final token = await Modular.get<UserRepository>().getToken();
+    final url = Uri.parse('https://oauth.reddit.com/api/subscribe');
+    String sub = userIsSubscriber ? 'unsub' : 'sub';
+    final headers = {
+      HttpHeaders.authorizationHeader: 'Bearer $token',
+      HttpHeaders.userAgentHeader: RedditInfo.userAgent,
+    };
+    final body = {
+      'action': sub,
+      'sr_name': name,
+    };
+    print(body);
+
+    http.Response response = await http.post(
+      url,
+      headers: headers,
+      body: body,
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to change subbed status');
+    }
+
+    return !userIsSubscriber;
   }
 }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:redditech/constants/app_theme.dart';
 import 'package:redditech/constants/reddit_info.dart';
 import 'package:redditech/services/api/reddit_api.dart';
+import 'package:redditech/utils/format_date.dart';
 import 'package:redditech/utils/format_number.dart';
 
 class HeaderSubreddit extends StatefulWidget {
@@ -34,12 +35,18 @@ class _HeaderSubredditState extends State<HeaderSubreddit> {
           (BuildContext context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.waiting:
-            return const Center(
-              child: CircularProgressIndicator(),
+            return const SizedBox(
+              height: 300,
+              child: Center(
+                child: CircularProgressIndicator(
+                  color: AppTheme.secondary,
+                ),
+              ),
             );
           default:
             _name = 'r/${widget.subredditName}';
-            _subscribers = FormatNumber.formatNumber(snapshot.data!['subscribers']);
+            _subscribers =
+                FormatNumber.formatNumber(snapshot.data!['subscribers']);
             _description = snapshot.data!['public_description'];
             _iconUrl = (snapshot.data!['icon_img'] != '')
                 ? snapshot.data!['icon_img']
@@ -47,7 +54,7 @@ class _HeaderSubredditState extends State<HeaderSubreddit> {
             _bannerUrl = (snapshot.data!['banner_background_image'] != '')
                 ? snapshot.data!['banner_background_image']
                 : RedditInfo.urlBanner;
-            _createdUtc = '${DateTime.fromMillisecondsSinceEpoch(snapshot.data!['created_utc'].toInt() * 1000).day} ${DateTime.fromMillisecondsSinceEpoch(snapshot.data!['created_utc'].toInt() * 1000).month} ${DateTime.fromMillisecondsSinceEpoch(snapshot.data!['created_utc'].toInt() * 1000).year}';
+            _createdUtc = FormatDate.exactDate(snapshot.data!['created_utc']);
             _userIsSubscriber = snapshot.data!['user_is_subscriber'];
 
             return Padding(
@@ -127,8 +134,9 @@ class _HeaderSubredditState extends State<HeaderSubreddit> {
                       child: Text(_description,
                           textAlign: TextAlign.start,
                           style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,),
+                            color: Colors.white,
+                            fontSize: 12,
+                          ),
                           softWrap: true),
                     ),
                     Padding(
@@ -144,11 +152,11 @@ class _HeaderSubredditState extends State<HeaderSubreddit> {
                                   const Icon(
                                     Icons.people,
                                     color: Colors.white,
-                                    size: 12,
+                                    size: 16,
                                   ),
                                   const SizedBox(width: 5),
                                   Text(
-                                    '$_subscribers subscribers',
+                                    '$_subscribers members',
                                     style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 12,
@@ -156,20 +164,33 @@ class _HeaderSubredditState extends State<HeaderSubreddit> {
                                   ),
                                 ],
                               ),
-                              Text(
-                                'Created $_createdUtc',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                ),
+                              Row(
+                                children: [
+                                  const Icon(
+                                    Icons.calendar_today,
+                                    color: Colors.white,
+                                    size: 16,
+                                  ),
+                                  const SizedBox(width: 5),
+                                  Text(
+                                    _createdUtc,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
-
                           TextButton(
                             onPressed: () {
-                              setState(() {
-                                _userIsSubscriber = !_userIsSubscriber;
+                              var subbed = RedditAPI.changeSubbed(
+                                  _userIsSubscriber, _name);
+                              subbed.then((subbed) {
+                                setState(() {
+                                  _userIsSubscriber = subbed;
+                                });
                               });
                             },
                             style: ButtonStyle(
@@ -177,25 +198,19 @@ class _HeaderSubredditState extends State<HeaderSubreddit> {
                                   RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(18.0),
-                                  side: BorderSide(
-                                    color: (_userIsSubscriber)
-                                        ? Colors.white
-                                        : Colors.transparent,
+                                  side: const BorderSide(
+                                    color: Colors.white,
                                   ),
                                 ),
                               ),
                               backgroundColor: MaterialStateProperty.all<Color>(
-                                (_userIsSubscriber)
-                                    ? Colors.white
-                                    : AppTheme.primary,
+                                Colors.white,
                               ),
                             ),
                             child: Text(
-                              (_userIsSubscriber) ? 'Subscribed' : 'Subscribe',
-                              style: TextStyle(
-                                color: (_userIsSubscriber)
-                                    ? AppTheme.primary
-                                    : Colors.white,
+                              (_userIsSubscriber) ? 'Leave' : 'Join',
+                              style: const TextStyle(
+                                color: AppTheme.primary,
                                 fontSize: 12,
                               ),
                             ),

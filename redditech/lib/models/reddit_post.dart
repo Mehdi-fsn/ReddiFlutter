@@ -32,10 +32,7 @@ class RedditPost extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(
-        top: 10,
-        bottom: 10,
-      ),
+      padding: const EdgeInsets.all(10.0),
       child: Container(
         width: double.infinity,
         decoration: BoxDecoration(
@@ -167,9 +164,9 @@ class _SelfTextState extends State<SelfText> {
                 width: double.infinity,
               ),
             ),
-        if (!_isMoreThan100) const SizedBox(height: 7),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        const SizedBox(height: 7),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
@@ -208,8 +205,10 @@ class _SelfTextState extends State<SelfText> {
               ],
             ),
             if (_isMoreThan100)
-              TextButton(
-                onPressed: () {
+              const SizedBox(height: 7),
+            if (_isMoreThan100)
+              GestureDetector(
+                onTap: () {
                   setState(() {
                     _isExpanded = !_isExpanded;
                   });
@@ -218,7 +217,7 @@ class _SelfTextState extends State<SelfText> {
                   _isExpanded ? 'show-less'.i18n() : 'show-more'.i18n(),
                   style: const TextStyle(
                     color: AppTheme.primary,
-                    fontSize: 10,
+                    fontSize: 13,
                   ),
                 ),
               ),
