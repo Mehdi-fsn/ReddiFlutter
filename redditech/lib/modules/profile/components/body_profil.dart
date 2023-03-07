@@ -19,12 +19,12 @@ class _BodyProfileState extends State<BodyProfile> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SizedBox(
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: SizedBox(
             width: double.infinity,
             height: 60,
             child: Row(
@@ -83,17 +83,17 @@ class _BodyProfileState extends State<BodyProfile> {
               ],
             ),
           ),
-          const SizedBox(height: 10),
-          // IndexedStack allow to display only one widget at a time without rebuilding the other
-          IndexedStack(
-            index: _tabController,
-            children: const [
-              ListUserPost(),
-              Settings(),
-            ],
-          ),
-        ],
-      ),
+        ),
+        const SizedBox(height: 10),
+        // IndexedStack allow to display only one widget at a time without rebuilding the other
+        IndexedStack(
+          index: _tabController,
+          children: const [
+            ListUserPost(),
+            Settings(),
+          ],
+        ),
+      ],
     );
   }
 }
@@ -119,11 +119,14 @@ class ListUserPost extends StatelessWidget {
               );
             default:
               if (snapshot.data!.isEmpty) {
-                return Center(
-                  child: Text(
-                    'no-post-found'.i18n(),
-                    style: const TextStyle(
-                      fontSize: 20,
+                return SizedBox(
+                  height: 300,
+                  child: Center(
+                    child: Text(
+                      'no-posts-found'.i18n(),
+                      style: const TextStyle(
+                        fontSize: 20,
+                      ),
                     ),
                   ),
                 );
@@ -222,15 +225,21 @@ class _SettingsState extends State<Settings> {
                                   ),
                                 ],
                                 onChanged: (value) {
-                                  RedditAPI.updateRedditPreferences(
-                                      {'lang': value});
-
-                                  if(value != _lang && value == 'en') {
-                                    BlocProvider.of<LocalizationBloc>(context).add(const LocalizationChangedEvent(locale: Locale('en', 'US')));
-                                  }
-                                  if(value != _lang && value == 'fr') {
-                                    BlocProvider.of<LocalizationBloc>(context).add(const LocalizationChangedEvent(locale: Locale('fr', 'FR')));
-                                  }
+                                  var futureIsDone =
+                                      RedditAPI.updateRedditPreferences(
+                                          {'lang': value});
+                                  futureIsDone.then((future) {
+                                    if (value != _lang && value == 'en') {
+                                      BlocProvider.of<LocalizationBloc>(context)
+                                          .add(const LocalizationChangedEvent(
+                                              locale: Locale('en', 'US')));
+                                    }
+                                    if (value != _lang && value == 'fr') {
+                                      BlocProvider.of<LocalizationBloc>(context)
+                                          .add(const LocalizationChangedEvent(
+                                              locale: Locale('fr', 'FR')));
+                                    }
+                                  });
                                 },
                               ),
                             ),
@@ -238,15 +247,14 @@ class _SettingsState extends State<Settings> {
                               title: Text('over-18'.i18n()),
                               activeColor: AppTheme.secondary,
                               value: _over18,
-                              onChanged: (value) async {
-                                setState(() {
-                                  _isUpdating = true;
-                                  _over18 = value;
-                                });
-                                await RedditAPI.updateRedditPreferences(
-                                    {'over_18': _over18});
-                                setState(() {
-                                  _isUpdating = false;
+                              onChanged: (value) {
+                                var futureIsDone =
+                                    RedditAPI.updateRedditPreferences(
+                                        {'over_18': value});
+                                futureIsDone.then((future) {
+                                  setState(() {
+                                    _over18 = value;
+                                  });
                                 });
                               },
                             ),
@@ -254,31 +262,31 @@ class _SettingsState extends State<Settings> {
                               title: Text('allow-clicktracking'.i18n()),
                               activeColor: AppTheme.secondary,
                               value: _allowClicktracking,
-                              onChanged: (value) async {
-                                setState(() {
-                                  _isUpdating = true;
-                                  _allowClicktracking = value;
-                                });
-                                await RedditAPI.updateRedditPreferences(
-                                    {'allow_clicktracking': _allowClicktracking});
-                                setState(() {
-                                  _isUpdating = false;
+                              onChanged: (value) {
+                                var futureIsDone =
+                                    RedditAPI.updateRedditPreferences(
+                                        {'allow_clicktracking': value});
+                                futureIsDone.then((future) {
+                                  setState(() {
+                                    _allowClicktracking = value;
+                                  });
                                 });
                               },
                             ),
                             SwitchListTile(
-                              title: Text('show-location-based-recommendations'.i18n()),
+                              title: Text(
+                                  'show-location-based-recommendations'.i18n()),
                               activeColor: AppTheme.secondary,
                               value: _showLocationBasedRecommendations,
-                              onChanged: (value) async {
-                                setState(() {
-                                  _isUpdating = true;
-                                  _showLocationBasedRecommendations = value;
+                              onChanged: (value) {
+                                var futureIsDone =
+                                    RedditAPI.updateRedditPreferences({
+                                  'show_location_based_recommendations': value
                                 });
-                                await RedditAPI.updateRedditPreferences(
-                                    {'show_location_based_recommendations': _showLocationBasedRecommendations});
-                                setState(() {
-                                  _isUpdating = false;
+                                futureIsDone.then((future) {
+                                  setState(() {
+                                    _showLocationBasedRecommendations = value;
+                                  });
                                 });
                               },
                             ),

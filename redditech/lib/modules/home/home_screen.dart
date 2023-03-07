@@ -16,190 +16,196 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Container(
-            decoration: const BoxDecoration(
-              color: AppTheme.primary,
-              borderRadius: BorderRadius.all(Radius.circular(10)),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Container(
+          decoration: const BoxDecoration(
+            color: Colors.transparent,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.only(
+              top: 10,
+              left: 10,
+              right: 10,
             ),
-            child: Column(
-              children: [
-                const Center(
+            child: Container(
+              decoration: const BoxDecoration(
+                color: AppTheme.primary,
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+              ),
+              child: SizedBox(
+                width: double.infinity,
+                child: Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          setState(() {
+                            _type = 'hot';
+                          });
+                        },
+                        style: ButtonStyle(
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                              side: BorderSide(
+                                color: (_type == 'hot')
+                                    ? Colors.white
+                                    : Colors.transparent,
+                              ),
+                            ),
+                          ),
+                        ),
+                        child: Text(
+                          'Hot',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            color: (_type == 'hot')
+                                ? Colors.white
+                                : AppTheme.textColor,
+                          ),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          setState(() {
+                            _type = 'new';
+                          });
+                        },
+                        style: ButtonStyle(
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                              side: BorderSide(
+                                color: (_type == 'new')
+                                    ? Colors.white
+                                    : Colors.transparent,
+                              ),
+                            ),
+                          ),
+                        ),
+                        child: Text(
+                          'New',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            color: (_type == 'new')
+                                ? Colors.white
+                                : AppTheme.textColor,
+                          ),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          setState(() {
+                            _type = 'top';
+                          });
+                        },
+                        style: ButtonStyle(
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                              side: BorderSide(
+                                color: (_type == 'top')
+                                    ? Colors.white
+                                    : Colors.transparent,
+                              ),
+                            ),
+                          ),
+                        ),
+                        child: Text(
+                          'Top',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            color: (_type == 'top')
+                                ? Colors.white
+                                : AppTheme.textColor,
+                          ),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          setState(() {
+                            _type = 'rising';
+                          });
+                        },
+                        style: ButtonStyle(
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                              side: BorderSide(
+                                color: (_type == 'rising')
+                                    ? Colors.white
+                                    : Colors.transparent,
+                              ),
+                            ),
+                          ),
+                        ),
+                        child: Text(
+                          'Rising',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            color: (_type == 'rising')
+                                ? Colors.white
+                                : AppTheme.textColor,
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                          onPressed: () {}, icon: const Icon(Icons.search)),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        FutureBuilder(
+          future: RedditAPI.fetchPostsSubreddit(type: _type),
+          builder: (BuildContext context,
+              AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.waiting:
+                return const Expanded(
                   child: SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: Center(child: Text('Search Bar')),
-                  ),
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  child: Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        TextButton(
-                          onPressed: () {
-                            setState(() {
-                              _type = 'hot';
-                            });
-                          },
-                          style: ButtonStyle(
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18.0),
-                                side: BorderSide(
-                                  color: (_type == 'hot')
-                                      ? Colors.white
-                                      : Colors.transparent,
-                                ),
-                              ),
-                            ),
-                          ),
-                          child: Text(
-                            'Hot',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                              color: (_type == 'hot')
-                                  ? Colors.white
-                                  : AppTheme.textColor,
-                            ),
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            setState(() {
-                              _type = 'new';
-                            });
-                          },
-                          style: ButtonStyle(
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18.0),
-                                side: BorderSide(
-                                  color: (_type == 'new')
-                                      ? Colors.white
-                                      : Colors.transparent,
-                                ),
-                              ),
-                            ),
-                          ),
-                          child: Text(
-                            'New',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                              color: (_type == 'new')
-                                  ? Colors.white
-                                  : AppTheme.textColor,
-                            ),
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            setState(() {
-                              _type = 'top';
-                            });
-                          },
-                          style: ButtonStyle(
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18.0),
-                                side: BorderSide(
-                                  color: (_type == 'top')
-                                      ? Colors.white
-                                      : Colors.transparent,
-                                ),
-                              ),
-                            ),
-                          ),
-                          child: Text(
-                            'Top',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                              color: (_type == 'top')
-                                  ? Colors.white
-                                  : AppTheme.textColor,
-                            ),
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            setState(() {
-                              _type = 'rising';
-                            });
-                          },
-                          style: ButtonStyle(
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18.0),
-                                side: BorderSide(
-                                  color: (_type == 'rising')
-                                      ? Colors.white
-                                      : Colors.transparent,
-                                ),
-                              ),
-                            ),
-                          ),
-                          child: Text(
-                            'Rising',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                              color: (_type == 'rising')
-                                  ? Colors.white
-                                  : AppTheme.textColor,
-                            ),
-                          ),
-                        ),
-                      ],
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        color: AppTheme.secondary,
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-          ),
-          FutureBuilder(
-            future: RedditAPI.fetchSubReddit(type: _type),
-            builder: (BuildContext context,
-                AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
-              switch (snapshot.connectionState) {
-                case ConnectionState.waiting:
-                  return const SizedBox(
-                      height: 500,
-                      child: Center(child: CircularProgressIndicator()));
-                default:
-                  if(snapshot.hasError) {
-                    const Center(child:Text('Error loading'));
-                  }
-                  return Expanded(
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: snapshot.data!.length,
-                      itemBuilder: (context, index) {
-                        return RedditPost(
-                          subreddit: snapshot.data![index]["subreddit"],
-                          author: snapshot.data![index]["author"],
-                          title: snapshot.data![index]["title"],
-                          selfText: snapshot.data![index]["selfText"],
-                          thumbnail: snapshot.data![index]["thumbnail"],
-                          score: snapshot.data![index]["score"],
-                          numComments: snapshot.data![index]["numComments"],
-                          createdUtc: snapshot.data![index]["createdUtc"],
-                        );
-                      },
-                    ),
-                  );
-              }
-            },
-          ),
-        ],
-      ),
+                );
+              default:
+                if (snapshot.hasError) {
+                  const Center(child: Text('Error loading'));
+                }
+                return Expanded(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      return RedditPost(
+                        subreddit: snapshot.data![index]["subreddit"],
+                        author: snapshot.data![index]["author"],
+                        title: snapshot.data![index]["title"],
+                        selfText: snapshot.data![index]["selfText"],
+                        thumbnail: snapshot.data![index]["thumbnail"],
+                        score: snapshot.data![index]["score"],
+                        numComments: snapshot.data![index]["numComments"],
+                        createdUtc: snapshot.data![index]["createdUtc"],
+                      );
+                    },
+                  ),
+                );
+            }
+          },
+        ),
+      ],
     );
   }
 }

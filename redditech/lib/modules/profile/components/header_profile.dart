@@ -142,7 +142,13 @@ class AvatarBannerUsernameVarInfoBloc extends StatelessWidget {
                     _avatarUrl!,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) => Container(
-                      color: AppTheme.secondary,
+                      color: Colors.transparent,
+                      alignment: Alignment.bottomCenter,
+                      child: const Icon(
+                        Icons.person,
+                        color: Colors.white,
+                        size: 100,
+                      ),
                     ),
                   ),
                 ),
