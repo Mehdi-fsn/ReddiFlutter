@@ -36,8 +36,9 @@ class NavBar extends StatelessWidget {
               Modular.to.navigate(AppPath.homeScreenPath);
               break;
             case 2:
-              await Modular.get<UserRepository>().deleteToken();
-              Modular.to.navigate(AppPath.loginScreenPath);
+              confirmLogout(context);
+              /*await Modular.get<UserRepository>().deleteToken();
+              Modular.to.navigate(AppPath.loginScreenPath);*/
               break;
             default:
               break;
@@ -46,4 +47,46 @@ class NavBar extends StatelessWidget {
       ),
     );
   }
+}
+
+confirmLogout(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return Center(
+        child: SizedBox(
+          width: 300,
+          height: 200,
+          child: AlertDialog(
+            title: const Text(
+              'Confirm Log Out ?',
+              textAlign: TextAlign.center,
+            ),
+            titlePadding: const EdgeInsets.only(top: 18),
+            actionsAlignment: MainAxisAlignment.center,
+            insetPadding: const EdgeInsets.all(25),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Modular.to.pop(context);
+                },
+                child: const Text('Cancel',
+                    style: TextStyle(color: AppTheme.secondary)),
+              ),
+              TextButton(
+                onPressed: () async {
+                  await Modular.get<UserRepository>().deleteToken();
+                  Modular.to.navigate(AppPath.loginScreenPath);
+                },
+                child: Text(
+                  'logout'.i18n(),
+                  style: const TextStyle(color: AppTheme.secondary),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
 }
