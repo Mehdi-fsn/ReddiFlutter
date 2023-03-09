@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserRepository {
@@ -25,7 +26,7 @@ class UserRepository {
     this.token = token;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('token', token);
-    print('Token set to $token');
+    log('Token set to $token');
   }
 
   // Username

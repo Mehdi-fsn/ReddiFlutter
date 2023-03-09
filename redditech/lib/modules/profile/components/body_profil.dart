@@ -6,6 +6,7 @@ import 'package:redditech/constants/app_theme.dart';
 import 'package:redditech/models/reddit_post.dart';
 import 'package:redditech/services/api/reddit_api.dart';
 import 'package:redditech/services/bloc/localization/localization_bloc.dart';
+import 'package:redditech/utils/error_catch.dart';
 
 class BodyProfile extends StatefulWidget {
   const BodyProfile({Key? key}) : super(key: key);
@@ -118,6 +119,11 @@ class ListUserPost extends StatelessWidget {
                 ),
               );
             default:
+              if (snapshot.hasError) {
+                ErrorCatch.catchError(snapshot, context);
+                return const SizedBox.shrink();
+              }
+
               if (snapshot.data!.isEmpty) {
                 return SizedBox(
                   height: 300,
@@ -192,6 +198,11 @@ class _SettingsState extends State<Settings> {
                 ),
               );
             default:
+              if (snapshot.hasError) {
+                ErrorCatch.catchError(snapshot, context);
+                return const SizedBox.shrink();
+              }
+
               if (!_isUpdating) {
                 _lang = snapshot.data!['lang'];
                 _over18 = snapshot.data!['over_18'];

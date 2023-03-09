@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
@@ -24,10 +23,7 @@ abstract class RedditAPI {
       url,
       headers: headers,
     );
-
-    if (response.statusCode != 200) {
-      throw Exception('Failed to load user information (/api/v1/me)');
-    }
+    checkResponseStatusCode(response);
 
     final jsonBody = jsonDecode(response.body);
     Map<String, dynamic> res = {
@@ -57,10 +53,7 @@ abstract class RedditAPI {
       url,
       headers: headers,
     );
-
-    if (response.statusCode != 200) {
-      throw Exception('Failed to load user posts (/user/$username/submitted)');
-    }
+    checkResponseStatusCode(response);
 
     final jsonBody = jsonDecode(response.body);
     final List<Map<String, dynamic>> posts = [];
@@ -97,10 +90,7 @@ abstract class RedditAPI {
       url,
       headers: headers,
     );
-
-    if (response.statusCode != 200) {
-      throw Exception('Failed to load user settings (/api/v1/me/prefs)');
-    }
+    checkResponseStatusCode(response);
 
     final jsonBody = jsonDecode(response.body);
     Map<String, dynamic> res = {
@@ -129,10 +119,7 @@ abstract class RedditAPI {
       headers: headers,
       body: jsonEncode(prefs),
     );
-
-    if (response.statusCode != 200) {
-      throw Exception('Failed to update user settings (/api/v1/me/prefs)');
-    }
+    checkResponseStatusCode(response);
 
     return true;
   }
@@ -154,9 +141,7 @@ abstract class RedditAPI {
       url,
       headers: headers,
     );
-    if (response.statusCode != 200) {
-      throw Exception('Failed to load user posts (/hot|new|top|best)');
-    }
+    checkResponseStatusCode(response);
 
     final jsonBody = jsonDecode(response.body);
     final List<Map<String, dynamic>> posts = [];
@@ -194,11 +179,7 @@ abstract class RedditAPI {
       url,
       headers: headers,
     );
-
-    if (response.statusCode != 200) {
-      throw Exception(
-          'Failed to load subreddit info (/r/$subredditName/about)');
-    }
+    checkResponseStatusCode(response);
 
     final jsonBody = jsonDecode(response.body);
     String dataIcon;
@@ -238,10 +219,7 @@ abstract class RedditAPI {
       headers: headers,
       body: body,
     );
-
-    if (response.statusCode != 200) {
-      throw Exception('Failed to change subbed status');
-    }
+    checkResponseStatusCode(response);
 
     return !userIsSubscriber;
   }
@@ -268,4 +246,12 @@ Map<String, dynamic> getMedia(Map<String, dynamic> data) {
   }
 
   return media;
+}
+
+void checkResponseStatusCode(http.Response response) {
+  if (response.statusCode == 401) {
+    throw Exception('Unauthorized - Invalid token');
+  } else if (response.statusCode != 200) {
+    throw Exception('Failed to load information');
+  }
 }

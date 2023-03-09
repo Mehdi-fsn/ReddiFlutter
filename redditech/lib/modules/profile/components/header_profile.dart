@@ -5,6 +5,7 @@ import 'package:localization/localization.dart';
 import 'package:redditech/constants/app_theme.dart';
 import 'package:redditech/constants/reddit_info.dart';
 import 'package:redditech/services/api/reddit_api.dart';
+import 'package:redditech/utils/error_catch.dart';
 
 class HeaderProfile extends StatefulWidget {
   const HeaderProfile({Key? key}) : super(key: key);
@@ -45,9 +46,8 @@ class _HeaderProfileState extends State<HeaderProfile> {
             );
           default:
             if (snapshot.hasError) {
-              return Center(
-                child: Text('${'loading-error'.i18n()} : ${snapshot.error}'),
-              );
+              ErrorCatch.catchError(snapshot, context);
+              return const SizedBox.shrink();
             }
 
             _username = snapshot.data!['username'];

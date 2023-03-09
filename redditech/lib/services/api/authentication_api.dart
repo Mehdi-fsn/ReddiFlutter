@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:draw/draw.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:flutter_web_auth/flutter_web_auth.dart';
@@ -36,7 +38,8 @@ class AuthenticationAPI {
 
   launchUrl() async {
     result = await FlutterWebAuth.authenticate(
-      url: authUrl.toString(), callbackUrlScheme: 'foobar',
+      url: authUrl.toString(),
+      callbackUrlScheme: 'foobar',
     );
   }
 
@@ -52,10 +55,11 @@ class AuthenticationAPI {
   setCurrentUser() async {
     currentUser = await reddit.user.me();
     Modular.get<UserRepository>().setUsername(currentUser!.displayName);
-    print("Logged in as ${currentUser?.displayName}");
+    log("Logged in as ${currentUser?.displayName}");
   }
 
   setToken() async {
-    await Modular.get<UserRepository>().setToken(reddit.auth.credentials.accessToken);
+    await Modular.get<UserRepository>()
+        .setToken(reddit.auth.credentials.accessToken);
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:redditech/constants/app_theme.dart';
 import 'package:redditech/models/reddit_post.dart';
 import 'package:redditech/services/api/reddit_api.dart';
+import 'package:redditech/utils/error_catch.dart';
 
 class BodySubreddit extends StatefulWidget {
   const BodySubreddit({Key? key, this.subredditName}) : super(key: key);
@@ -33,6 +34,11 @@ class _BodySubredditState extends State<BodySubreddit> {
               ),
             );
           default:
+            if (snapshot.hasError) {
+              ErrorCatch.catchError(snapshot, context);
+              return const SizedBox.shrink();
+            }
+
             return Column(
               children: [
                 Row(

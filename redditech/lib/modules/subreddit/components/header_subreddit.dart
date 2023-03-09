@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:redditech/constants/app_theme.dart';
 import 'package:redditech/constants/reddit_info.dart';
 import 'package:redditech/services/api/reddit_api.dart';
+import 'package:redditech/utils/error_catch.dart';
 
 class HeaderSubreddit extends StatefulWidget {
   const HeaderSubreddit({Key? key, required this.subredditName})
@@ -41,6 +42,11 @@ class _HeaderSubredditState extends State<HeaderSubreddit> {
               ),
             );
           default:
+            if (snapshot.hasError) {
+              ErrorCatch.catchError(snapshot, context);
+              return const SizedBox.shrink();
+            }
+
             _name = 'r/${widget.subredditName}';
             _subscribers = snapshot.data!['subscribers'];
             _description = snapshot.data!['public_description'];

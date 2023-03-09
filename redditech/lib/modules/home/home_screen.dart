@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:redditech/constants/app_theme.dart';
 import 'package:redditech/models/reddit_post.dart';
 import 'package:redditech/services/api/reddit_api.dart';
+import 'package:redditech/utils/error_catch.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -182,7 +183,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               default:
                 if (snapshot.hasError) {
-                  const Center(child: Text('Error loading'));
+                  ErrorCatch.catchError(snapshot, context);
+                  return const SizedBox.shrink();
                 }
                 return Expanded(
                   child: ListView.builder(
