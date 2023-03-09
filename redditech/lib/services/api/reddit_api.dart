@@ -7,6 +7,7 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:redditech/constants/reddit_info.dart';
 import 'package:redditech/utils/format_date.dart';
 import 'package:redditech/services/repositories/user_repository.dart';
+import 'package:redditech/utils/format_number.dart';
 
 abstract class RedditAPI {
   static Future<Map<String, dynamic>> fetchRedditUserInfo() async {
@@ -63,18 +64,19 @@ abstract class RedditAPI {
 
     final jsonBody = jsonDecode(response.body);
     final List<Map<String, dynamic>> posts = [];
+    final data = jsonBody['data']['children'];
     for (var i = 0; i < jsonBody['data']['dist']; i++) {
-      var date = FormatDate.toDateTime(
-          jsonBody['data']['children'][i]['data']['created_utc']);
+      var date = FormatDate.toDateTime(data[i]['data']['created_utc']);
+      var media = getMedia(data[i]);
       Map<String, dynamic> post = {
-        'subreddit': jsonBody['data']['children'][i]['data']
-            ['subreddit_name_prefixed'],
-        'author': 'u/${jsonBody['data']['children'][i]['data']['author']}',
-        'title': jsonBody['data']['children'][i]['data']['title'],
-        'selfText': jsonBody['data']['children'][i]['data']['selftext'],
-        'thumbnail': jsonBody['data']['children'][i]['data']['thumbnail'],
-        'score': jsonBody['data']['children'][i]['data']['score'],
-        'numComments': jsonBody['data']['children'][i]['data']['num_comments'],
+        'subreddit': data[i]['data']['subreddit_name_prefixed'],
+        'author': 'u/${data[i]['data']['author']}',
+        'title': data[i]['data']['title'],
+        'thumbnail': data[i]['data']['thumbnail'],
+        'media': media,
+        'score': FormatNumber.formatNumber(data[i]['data']['score']),
+        'numComments':
+            FormatNumber.formatNumber(data[i]['data']['num_comments']),
         'createdUtc': date,
       };
       posts.add(post);
@@ -158,23 +160,24 @@ abstract class RedditAPI {
 
     final jsonBody = jsonDecode(response.body);
     final List<Map<String, dynamic>> posts = [];
+    var data = jsonBody['data']['children'];
     for (var i = 0; i < jsonBody['data']['dist']; i++) {
-      var date = FormatDate.toDateTime(
-          jsonBody['data']['children'][i]['data']['created_utc']);
+      var date = FormatDate.toDateTime(data[i]['data']['created_utc']);
+      var media = getMedia(data[i]);
+
       Map<String, dynamic> post = {
-        'subreddit': jsonBody['data']['children'][i]['data']
-            ['subreddit_name_prefixed'],
-        'author': 'u/${jsonBody['data']['children'][i]['data']['author']}',
-        'title': jsonBody['data']['children'][i]['data']['title'],
-        'selfText': jsonBody['data']['children'][i]['data']['selftext'],
-        'thumbnail': jsonBody['data']['children'][i]['data']['thumbnail'],
-        'score': jsonBody['data']['children'][i]['data']['score'],
-        'numComments': jsonBody['data']['children'][i]['data']['num_comments'],
+        'subreddit': data[i]['data']['subreddit_name_prefixed'],
+        'author': 'u/${data[i]['data']['author']}',
+        'title': data[i]['data']['title'],
+        'thumbnail': data[i]['data']['thumbnail'],
+        'media': media,
+        'score': FormatNumber.formatNumber(data[i]['data']['score']),
+        'numComments':
+            FormatNumber.formatNumber(data[i]['data']['num_comments']),
         'createdUtc': date,
       };
       posts.add(post);
     }
-
     return posts;
   }
 
@@ -193,26 +196,27 @@ abstract class RedditAPI {
     );
 
     if (response.statusCode != 200) {
-      throw Exception('Failed to load subreddit info (/r/$subredditName/about)');
+      throw Exception(
+          'Failed to load subreddit info (/r/$subredditName/about)');
     }
 
     final jsonBody = jsonDecode(response.body);
-    var dataIcon;
-    if(jsonBody['data']['icon_img'] == ''){
+    String dataIcon;
+    if (jsonBody['data']['icon_img'] == '') {
       dataIcon = 'community_icon';
     } else {
       dataIcon = 'icon_img';
     }
     Map<String, dynamic> res = {
       'display_name_prefixed': jsonBody['data']['display_name_prefixed'],
-      'subscribers': jsonBody['data']['subscribers'],
+      'subscribers': FormatNumber.formatNumber(jsonBody['data']['subscribers']),
       'public_description': jsonBody['data']['public_description'],
-      'created_utc': jsonBody['data']['created_utc'],
+      'created_utc': FormatDate.exactDate(jsonBody['data']['created_utc']),
       'user_is_subscriber': jsonBody['data']['user_is_subscriber'],
       'icon_img': jsonBody['data'][dataIcon].replaceAll('amp;', ''),
-      'banner_background_image': jsonBody['data']['banner_background_image'].replaceAll('amp;', ''),
+      'banner_background_image':
+          jsonBody['data']['banner_background_image'].replaceAll('amp;', ''),
     };
-    print(res['user_is_subscriber']);
     return res;
   }
 
@@ -228,7 +232,6 @@ abstract class RedditAPI {
       'action': sub,
       'sr_name': name,
     };
-    print(body);
 
     http.Response response = await http.post(
       url,
@@ -242,4 +245,27 @@ abstract class RedditAPI {
 
     return !userIsSubscriber;
   }
+}
+
+Map<String, dynamic> getMedia(Map<String, dynamic> data) {
+  var media = <String, dynamic>{};
+  if (data['data']['secure_media'] != null &&
+      data['data']['secure_media']['reddit_video'] != null) {
+    media = {
+      'type': 'video',
+      'body': data['data']['secure_media']['reddit_video']['fallback_url']
+          .replaceAll('amp;', '')
+    };
+  } else if (data['data']['preview'] != null &&
+      data['data']['selftext'] == '') {
+    media = {
+      'type': 'image',
+      'body': data['data']['preview']['images'][0]['source']['url']
+          .replaceAll('amp;', '')
+    };
+  } else {
+    media = {'type': 'text', 'body': data['data']['selftext']};
+  }
+
+  return media;
 }

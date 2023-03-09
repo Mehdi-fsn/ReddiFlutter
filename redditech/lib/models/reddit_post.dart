@@ -4,8 +4,7 @@ import 'package:localization/localization.dart';
 import 'package:redditech/constants/app_path.dart';
 import 'package:redditech/constants/app_theme.dart';
 import 'package:redditech/constants/reddit_info.dart';
-import 'package:redditech/utils/extract_url.dart';
-import 'package:redditech/utils/format_number.dart';
+import 'package:redditech/models/video_widget.dart';
 
 class RedditPost extends StatelessWidget {
   const RedditPost(
@@ -13,7 +12,7 @@ class RedditPost extends StatelessWidget {
       required this.subreddit,
       required this.author,
       required this.title,
-      required this.selfText,
+      required this.media,
       required this.thumbnail,
       required this.score,
       required this.numComments,
@@ -23,10 +22,10 @@ class RedditPost extends StatelessWidget {
   final String subreddit;
   final String author;
   final String title;
-  final String selfText;
+  final Map<String, dynamic> media;
   final String thumbnail;
-  final int score;
-  final int numComments;
+  final String score;
+  final String numComments;
   final String createdUtc;
 
   @override
@@ -60,38 +59,16 @@ class RedditPost extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    GestureDetector(
-                      onTap: () {
-                        var name = subreddit.split('/')[1];
-                        Modular.to.pushNamed('${AppPath.subredditScreenPath}/$name');
-                      },
-                      child: Text(
-                        subreddit,
-                        style: const TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.bold),
-                      ),
+                    Header(
+                      subreddit: subreddit,
+                      author: author,
+                      title: title,
+                      createdUtc: createdUtc,
                     ),
-                    Text(
-                      'posted-by-ago'.i18n([author, createdUtc]),
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: Colors.grey.shade600,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 4.0),
-                      child: Text(
-                        title,
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    SelfText(
-                        selfText: selfText,
-                        score: score,
-                        numComments: numComments),
+                    const SizedBox(height: 8),
+                    Body(media: media),
+                    const SizedBox(height: 8),
+                    Footer(score: score, numComments: numComments),
                   ],
                 ),
               ),
@@ -103,17 +80,131 @@ class RedditPost extends StatelessWidget {
   }
 }
 
-class SelfText extends StatefulWidget {
-  const SelfText(
-      {Key? key,
-      required this.selfText,
-      required this.score,
-      required this.numComments})
+class Header extends StatelessWidget {
+  const Header({
+    Key? key,
+    required this.subreddit,
+    required this.author,
+    required this.title,
+    required this.createdUtc,
+  }) : super(key: key);
+
+  final String subreddit;
+  final String author;
+  final String title;
+  final String createdUtc;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        GestureDetector(
+          onTap: () {
+            var name = subreddit.split('/');
+            if(name[0] == 'r') {
+              Modular.to.pushNamed('${AppPath.subredditScreenPath}/${name[1]}');
+            }
+          },
+          child: Text(
+            subreddit,
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+          ),
+        ),
+        Text(
+          'posted-by-ago'.i18n([author, createdUtc]),
+          style: TextStyle(
+            fontSize: 10,
+            color: Colors.grey.shade600,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 4.0),
+          child: Text(
+            title,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class Body extends StatelessWidget {
+  const Body({Key? key, required this.media}) : super(key: key);
+
+  final Map<String, dynamic> media;
+
+  @override
+  Widget build(BuildContext context) {
+    switch (media['type']) {
+      case 'image':
+        return ClipRect(
+          child: Image.network(
+            media['body'],
+            fit: BoxFit.cover,
+            width: double.infinity,
+            errorBuilder: (context, error, stackTrace) => const SizedBox(),
+          ),
+        );
+      case 'video':
+        return VideoWidget(url: media['body']);
+      default:
+        return SelfText(body: media['body']);
+    }
+  }
+}
+
+class Footer extends StatelessWidget {
+  const Footer({Key? key, required this.score, required this.numComments})
       : super(key: key);
 
-  final String selfText;
-  final int score;
-  final int numComments;
+  final String score;
+  final String numComments;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Icon(
+          Icons.thumb_up,
+          size: 13,
+          color: Colors.grey.shade600,
+        ),
+        const SizedBox(width: 5),
+        Text(
+          score,
+          style: TextStyle(
+            fontSize: 13,
+            color: Colors.grey.shade600,
+          ),
+        ),
+        const SizedBox(width: 10),
+        Icon(
+          Icons.comment,
+          size: 13,
+          color: Colors.grey.shade600,
+        ),
+        const SizedBox(width: 5),
+        Text(
+          '$numComments ${'comments'.i18n()}${numComments.length == 1 && (numComments[0] == '1' || numComments[0] == '0') ? '' : 's'}',
+          style: TextStyle(
+            fontSize: 13,
+            color: Colors.grey.shade600,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class SelfText extends StatefulWidget {
+  const SelfText({Key? key, required this.body}) : super(key: key);
+
+  final String body;
 
   @override
   State<SelfText> createState() => _SelfTextState();
@@ -121,22 +212,34 @@ class SelfText extends StatefulWidget {
 
 class _SelfTextState extends State<SelfText> {
   bool _isExpanded = false;
-  bool _isMoreThan100 = false;
-  List<String?> _urls = [];
-  String _text = "";
+  List<String> _textList = [];
+  List<Widget> _widgetList = [];
 
   @override
   void initState() {
     super.initState();
-
-    var extracted =
-        ExtractUrl.extractUrl(widget.selfText.replaceAll("amp;", ""));
-    _urls = extracted['urls'];
-    _text = extracted['text'];
-
-    if (_text.length > 100) {
-      _isMoreThan100 = true;
-    }
+    _textList = splitSelfTextByUrl(widget.body);
+    _widgetList = _textList.map((text) {
+      if (text.startsWith('https://preview.redd.it/')) {
+        return ClipRect(
+          child: Image.network(
+            text,
+            fit: BoxFit.cover,
+            height: 200,
+            width: double.infinity,
+            errorBuilder: (context, error, stackTrace) => const SizedBox(),
+          ),
+        );
+      } else {
+        return Text(
+          text,
+          style: const TextStyle(
+            fontSize: 12,
+            color: AppTheme.textColor,
+          ),
+        );
+      }
+    }).toList();
   }
 
   @override
@@ -144,87 +247,52 @@ class _SelfTextState extends State<SelfText> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          _isMoreThan100
-              ? _isExpanded
-                  ? _text
-                  : '${_text.substring(0, 100)}...'
-              : _text,
-          style: const TextStyle(
-            fontSize: 12,
+        ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount:
+              _widgetList.length > 3 && !_isExpanded ? 3 : _widgetList.length,
+          itemBuilder: (context, index) {
+            return _widgetList[index];
+          },
+        ),
+        if (_widgetList.length > 3) const SizedBox(height: 8),
+        if (_widgetList.length > 3)
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                _isExpanded = !_isExpanded;
+              });
+            },
+            child: Text(
+              _isExpanded ? 'show-less'.i18n() : 'show-more'.i18n(),
+              style: const TextStyle(
+                fontSize: 12,
+                color: AppTheme.primary,
+              ),
+            ),
           ),
-        ),
-        if (_urls.isNotEmpty)
-          for (var url in _urls)
-            ClipRect(
-              child: Image.network(
-                url!,
-                fit: BoxFit.cover,
-                height: 200,
-                width: double.infinity,
-              ),
-            ),
-        const SizedBox(height: 7),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(
-                  Icons.arrow_upward,
-                  size: 13,
-                  color: Colors.grey.shade600,
-                ),
-                Icon(
-                  Icons.arrow_downward,
-                  size: 13,
-                  color: Colors.grey.shade600,
-                ),
-                const SizedBox(width: 5),
-                Text(
-                  FormatNumber.formatNumber(widget.score),
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: Colors.grey.shade600,
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Icon(
-                  Icons.comment,
-                  size: 13,
-                  color: Colors.grey.shade600,
-                ),
-                const SizedBox(width: 5),
-                Text(
-                  '${widget.numComments} ${'comments'.i18n()}${widget.numComments > 1 ? 's' : ''}',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: Colors.grey.shade600,
-                  ),
-                ),
-              ],
-            ),
-            if (_isMoreThan100)
-              const SizedBox(height: 7),
-            if (_isMoreThan100)
-              GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _isExpanded = !_isExpanded;
-                  });
-                },
-                child: Text(
-                  _isExpanded ? 'show-less'.i18n() : 'show-more'.i18n(),
-                  style: const TextStyle(
-                    color: AppTheme.primary,
-                    fontSize: 13,
-                  ),
-                ),
-              ),
-          ],
-        ),
-        if (!_isMoreThan100) const SizedBox(height: 7),
       ],
     );
   }
+}
+
+List<String> splitSelfTextByUrl(String text) {
+  var textList = text.replaceAll('amp;', '').split('\n');
+  final regExp = RegExp(
+    r'((http|https):\/\/)?[a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)',
+    caseSensitive: false,
+    multiLine: false,
+  );
+
+  var list = <String>[];
+  for (var i = 0; i < textList.length; i++) {
+    if (textList[i].contains('https://preview.redd.it/')) {
+      RegExpMatch? match = regExp.firstMatch(textList[i]);
+      list.add(match?.group(0) ?? '');
+    } else {
+      list.add(textList[i]);
+    }
+  }
+  return list;
 }
