@@ -12,7 +12,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  var _type = 'hot';
+  var _type = 'best';
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +40,35 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
+                      TextButton(
+                        onPressed: () {
+                          setState(() {
+                            _type = 'best';
+                          });
+                        },
+                        style: ButtonStyle(
+                          shape:
+                          MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                              side: BorderSide(
+                                color: (_type == 'best')
+                                    ? Colors.white
+                                    : Colors.transparent,
+                              ),
+                            ),
+                          ),
+                        ),
+                        child: Text(
+                          'Best',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            color: (_type == 'best')
+                                ? Colors.white
+                                : AppTheme.textColor,
+                          ),
+                        ),
+                      ),
                       TextButton(
                         onPressed: () {
                           setState(() {
@@ -127,35 +156,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                       ),
-                      TextButton(
-                        onPressed: () {
-                          setState(() {
-                            _type = 'rising';
-                          });
-                        },
-                        style: ButtonStyle(
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18.0),
-                              side: BorderSide(
-                                color: (_type == 'rising')
-                                    ? Colors.white
-                                    : Colors.transparent,
-                              ),
-                            ),
-                          ),
-                        ),
-                        child: Text(
-                          'Rising',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            color: (_type == 'rising')
-                                ? Colors.white
-                                : AppTheme.textColor,
-                          ),
-                        ),
-                      ),
                       IconButton(
                           onPressed: () {}, icon: const Icon(Icons.search)),
                     ],
@@ -193,7 +193,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         subreddit: snapshot.data![index]["subreddit"],
                         author: snapshot.data![index]["author"],
                         title: snapshot.data![index]["title"],
-                        selfText: snapshot.data![index]["selfText"],
+                        media: snapshot.data![index]["media"],
                         thumbnail: snapshot.data![index]["thumbnail"],
                         score: snapshot.data![index]["score"],
                         numComments: snapshot.data![index]["numComments"],

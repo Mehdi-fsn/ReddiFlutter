@@ -57,7 +57,7 @@ class Banner extends StatelessWidget {
               ),
               boxShadow: [
                 AppTheme.boxShadow,
-                    ]),
+              ]),
         ),
         Positioned(
           top: 180,

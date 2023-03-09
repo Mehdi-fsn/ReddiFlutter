@@ -141,7 +141,7 @@ class ListUserPost extends StatelessWidget {
                     subreddit: snapshot.data![index]["subreddit"],
                     author: snapshot.data![index]["author"],
                     title: snapshot.data![index]["title"],
-                    selfText: snapshot.data![index]["selfText"],
+                    media: snapshot.data![index]["media"],
                     thumbnail: snapshot.data![index]["thumbnail"],
                     score: snapshot.data![index]["score"],
                     numComments: snapshot.data![index]["numComments"],

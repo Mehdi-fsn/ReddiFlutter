@@ -165,7 +165,7 @@ class _BodySubredditState extends State<BodySubreddit> {
                       subreddit: snapshot.data![index]['subreddit'],
                       title: snapshot.data![index]['title'],
                       author: snapshot.data![index]['author'],
-                      selfText: snapshot.data![index]['selfText'],
+                      media: snapshot.data![index]['media'],
                       thumbnail: snapshot.data![index]['thumbnail'],
                       score: snapshot.data![index]['score'],
                       numComments: snapshot.data![index]['numComments'],

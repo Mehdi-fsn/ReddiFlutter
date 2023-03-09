@@ -45,8 +45,7 @@ class _HeaderSubredditState extends State<HeaderSubreddit> {
             );
           default:
             _name = 'r/${widget.subredditName}';
-            _subscribers =
-                FormatNumber.formatNumber(snapshot.data!['subscribers']);
+            _subscribers = snapshot.data!['subscribers'];
             _description = snapshot.data!['public_description'];
             _iconUrl = (snapshot.data!['icon_img'] != '')
                 ? snapshot.data!['icon_img']
@@ -54,7 +53,7 @@ class _HeaderSubredditState extends State<HeaderSubreddit> {
             _bannerUrl = (snapshot.data!['banner_background_image'] != '')
                 ? snapshot.data!['banner_background_image']
                 : RedditInfo.urlBanner;
-            _createdUtc = FormatDate.exactDate(snapshot.data!['created_utc']);
+            _createdUtc = snapshot.data!['created_utc'];
             _userIsSubscriber = snapshot.data!['user_is_subscriber'];
 
             return Padding(
