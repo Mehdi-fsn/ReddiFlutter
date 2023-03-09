@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:localization/localization.dart';
 
@@ -124,10 +125,10 @@ class AvatarBannerUsernameVarInfoBloc extends StatelessWidget {
                   ),
                 ),
                 clipBehavior: Clip.antiAliasWithSaveLayer,
-                child: Image.network(
-                  RedditInfo.urlBanner,
+                child: CachedNetworkImage(
+                  imageUrl: RedditInfo.urlBanner,
                   fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => Container(
+                  errorWidget: (context, error, stackTrace) => Container(
                     color: AppTheme.primary,
                   ),
                 ),
@@ -138,10 +139,10 @@ class AvatarBannerUsernameVarInfoBloc extends StatelessWidget {
                 child: SizedBox(
                   width: 100,
                   height: 150,
-                  child: Image.network(
-                    _avatarUrl!,
+                  child: CachedNetworkImage(
+                    imageUrl: _avatarUrl!,
                     fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => Container(
+                    errorWidget: (context, error, stackTrace) => Container(
                       color: Colors.transparent,
                       alignment: Alignment.bottomCenter,
                       child: const Icon(

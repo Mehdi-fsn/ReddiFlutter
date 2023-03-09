@@ -1,11 +1,8 @@
-import 'dart:developer';
-
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:redditech/constants/app_theme.dart';
 import 'package:redditech/constants/reddit_info.dart';
 import 'package:redditech/services/api/reddit_api.dart';
-import 'package:redditech/utils/format_date.dart';
-import 'package:redditech/utils/format_number.dart';
 
 class HeaderSubreddit extends StatefulWidget {
   const HeaderSubreddit({Key? key, required this.subredditName})
@@ -79,9 +76,16 @@ class _HeaderSubredditState extends State<HeaderSubreddit> {
                               ),
                             ),
                             clipBehavior: Clip.antiAliasWithSaveLayer,
-                            child: Image.network(
-                              _bannerUrl,
+                            child: CachedNetworkImage(
+                              imageUrl: _bannerUrl,
                               fit: BoxFit.cover,
+                              errorWidget: (context, error, stackTrace) =>
+                                  const Icon(Icons.error),
+                              placeholder: (context, url) => const Center(
+                                child: CircularProgressIndicator(
+                                  color: AppTheme.secondary,
+                                ),
+                              ),
                             ),
                           ),
                           Positioned(

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:localization/localization.dart';
@@ -47,10 +48,11 @@ class RedditPost extends StatelessWidget {
             children: [
               Expanded(
                 flex: 1,
-                child: Image.network(
-                  thumbnail,
-                  errorBuilder: (context, error, stackTrace) =>
-                      Image.network(RedditInfo.urlRedditCharacter),
+                child: CachedNetworkImage(
+                  imageUrl: thumbnail,
+                  errorWidget: (context, error, stackTrace) =>
+                      CachedNetworkImage(
+                          imageUrl: RedditInfo.urlRedditCharacter),
                 ),
               ),
               const SizedBox(width: 8),
@@ -102,7 +104,7 @@ class Header extends StatelessWidget {
         GestureDetector(
           onTap: () {
             var name = subreddit.split('/');
-            if(name[0] == 'r') {
+            if (name[0] == 'r') {
               Modular.to.pushNamed('${AppPath.subredditScreenPath}/${name[1]}');
             }
           },
@@ -143,11 +145,11 @@ class Body extends StatelessWidget {
     switch (media['type']) {
       case 'image':
         return ClipRect(
-          child: Image.network(
-            media['body'],
+          child: CachedNetworkImage(
+            imageUrl: media['body'],
             fit: BoxFit.cover,
             width: double.infinity,
-            errorBuilder: (context, error, stackTrace) => const SizedBox(),
+            errorWidget: (context, error, stackTrace) => const SizedBox(),
           ),
         );
       case 'video':
@@ -222,12 +224,12 @@ class _SelfTextState extends State<SelfText> {
     _widgetList = _textList.map((text) {
       if (text.startsWith('https://preview.redd.it/')) {
         return ClipRect(
-          child: Image.network(
-            text,
+          child: CachedNetworkImage(
+            imageUrl: text,
             fit: BoxFit.cover,
             height: 200,
             width: double.infinity,
-            errorBuilder: (context, error, stackTrace) => const SizedBox(),
+            errorWidget: (context, error, stackTrace) => const SizedBox(),
           ),
         );
       } else {
