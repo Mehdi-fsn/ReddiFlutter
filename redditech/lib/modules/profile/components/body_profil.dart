@@ -236,10 +236,8 @@ class _SettingsState extends State<Settings> {
                                   ),
                                 ],
                                 onChanged: (value) {
-                                  var futureIsDone =
-                                      RedditAPI.updateRedditPreferences(
-                                          {'lang': value});
-                                  futureIsDone.then((future) {
+                                  RedditAPI.updateRedditPreferences(
+                                      {'lang': value}).then((future) {
                                     if (value != _lang && value == 'en') {
                                       BlocProvider.of<LocalizationBloc>(context)
                                           .add(const LocalizationChangedEvent(
@@ -259,10 +257,8 @@ class _SettingsState extends State<Settings> {
                               activeColor: AppTheme.secondary,
                               value: _over18,
                               onChanged: (value) {
-                                var futureIsDone =
-                                    RedditAPI.updateRedditPreferences(
-                                        {'over_18': value});
-                                futureIsDone.then((future) {
+                                RedditAPI.updateRedditPreferences(
+                                    {'over_18': value}).then((future) {
                                   setState(() {
                                     _over18 = value;
                                   });
@@ -274,10 +270,9 @@ class _SettingsState extends State<Settings> {
                               activeColor: AppTheme.secondary,
                               value: _allowClicktracking,
                               onChanged: (value) {
-                                var futureIsDone =
-                                    RedditAPI.updateRedditPreferences(
-                                        {'allow_clicktracking': value});
-                                futureIsDone.then((future) {
+                                RedditAPI.updateRedditPreferences(
+                                        {'allow_clicktracking': value})
+                                    .then((future) {
                                   setState(() {
                                     _allowClicktracking = value;
                                   });
@@ -290,11 +285,9 @@ class _SettingsState extends State<Settings> {
                               activeColor: AppTheme.secondary,
                               value: _showLocationBasedRecommendations,
                               onChanged: (value) {
-                                var futureIsDone =
-                                    RedditAPI.updateRedditPreferences({
+                                RedditAPI.updateRedditPreferences({
                                   'show_location_based_recommendations': value
-                                });
-                                futureIsDone.then((future) {
+                                }).then((future) {
                                   setState(() {
                                     _showLocationBasedRecommendations = value;
                                   });

@@ -22,7 +22,7 @@ class NavBar extends StatelessWidget {
         backgroundColor: AppTheme.primary,
         activeColor: Colors.white,
         items: [
-          TabItem(icon: Icons.settings, title: 'profile'.i18n()),
+          TabItem(icon: Icons.person, title: 'profile'.i18n()),
           TabItem(icon: Icons.home, title: 'home'.i18n()),
           TabItem(icon: Icons.logout, title: 'logout'.i18n()),
         ],
@@ -37,8 +37,6 @@ class NavBar extends StatelessWidget {
               break;
             case 2:
               confirmLogout(context);
-              /*await Modular.get<UserRepository>().deleteToken();
-              Modular.to.navigate(AppPath.loginScreenPath);*/
               break;
             default:
               break;

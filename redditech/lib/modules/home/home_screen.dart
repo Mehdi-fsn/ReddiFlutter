@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:redditech/constants/app_path.dart';
 
 import 'package:redditech/constants/app_theme.dart';
 import 'package:redditech/models/reddit_post.dart';
+import 'package:redditech/models/subreddit_suggestion.dart';
 import 'package:redditech/services/api/reddit_api.dart';
 import 'package:redditech/utils/error_catch.dart';
 
@@ -14,6 +18,9 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   var _type = 'best';
+  var userSearch = "";
+  var showSubreddit = false;
+  var showSearchbar = false;
 
   @override
   Widget build(BuildContext context) {
@@ -37,131 +44,167 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               child: SizedBox(
                 width: double.infinity,
-                child: Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      TextButton(
-                        onPressed: () {
-                          setState(() {
-                            _type = 'best';
-                          });
+                child: showSearchbar
+                    ? TypeAheadField<RedditSub>(
+                        textFieldConfiguration: TextFieldConfiguration(
+                          decoration: InputDecoration(
+                            prefixIcon: IconButton(
+                                icon: const Icon(Icons.search),
+                                onPressed: () {}),
+                            suffixIcon: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    showSearchbar = false;
+                                  });
+                                },
+                                icon: const Icon(Icons.close)),
+                            border: const OutlineInputBorder(),
+                            hintText: 'Search Username',
+                          ),
+                        ),
+                        suggestionsCallback:
+                            RedditAPI.fetchSubredditSuggestions,
+                        itemBuilder: (context, RedditSub suggestion) {
+                          return ListTile(title: Text(suggestion.name));
                         },
-                        style: ButtonStyle(
-                          shape:
-                          MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18.0),
-                              side: BorderSide(
-                                color: (_type == 'best')
-                                    ? Colors.white
-                                    : Colors.transparent,
+                        noItemsFoundBuilder: (context) => const ListTile(
+                          title: Text('No Subreddits Found'),
+                        ),
+                        onSuggestionSelected: (RedditSub suggestion) {
+                          Modular.to.pushNamed(
+                              '${AppPath.subredditScreenPath}/${suggestion.name}');
+                        },
+                      )
+                    : Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  _type = 'best';
+                                });
+                              },
+                              style: ButtonStyle(
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(18.0),
+                                    side: BorderSide(
+                                      color: (_type == 'best')
+                                          ? Colors.white
+                                          : Colors.transparent,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              child: Text(
+                                'Best',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  color: (_type == 'best')
+                                      ? Colors.white
+                                      : AppTheme.textColor,
+                                ),
                               ),
                             ),
-                          ),
-                        ),
-                        child: Text(
-                          'Best',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            color: (_type == 'best')
-                                ? Colors.white
-                                : AppTheme.textColor,
-                          ),
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          setState(() {
-                            _type = 'hot';
-                          });
-                        },
-                        style: ButtonStyle(
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18.0),
-                              side: BorderSide(
-                                color: (_type == 'hot')
-                                    ? Colors.white
-                                    : Colors.transparent,
+                            TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  _type = 'hot';
+                                });
+                              },
+                              style: ButtonStyle(
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(18.0),
+                                    side: BorderSide(
+                                      color: (_type == 'hot')
+                                          ? Colors.white
+                                          : Colors.transparent,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              child: Text(
+                                'Hot',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  color: (_type == 'hot')
+                                      ? Colors.white
+                                      : AppTheme.textColor,
+                                ),
                               ),
                             ),
-                          ),
-                        ),
-                        child: Text(
-                          'Hot',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            color: (_type == 'hot')
-                                ? Colors.white
-                                : AppTheme.textColor,
-                          ),
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          setState(() {
-                            _type = 'new';
-                          });
-                        },
-                        style: ButtonStyle(
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18.0),
-                              side: BorderSide(
-                                color: (_type == 'new')
-                                    ? Colors.white
-                                    : Colors.transparent,
+                            TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  _type = 'new';
+                                });
+                              },
+                              style: ButtonStyle(
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(18.0),
+                                    side: BorderSide(
+                                      color: (_type == 'new')
+                                          ? Colors.white
+                                          : Colors.transparent,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              child: Text(
+                                'New',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  color: (_type == 'new')
+                                      ? Colors.white
+                                      : AppTheme.textColor,
+                                ),
                               ),
                             ),
-                          ),
-                        ),
-                        child: Text(
-                          'New',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            color: (_type == 'new')
-                                ? Colors.white
-                                : AppTheme.textColor,
-                          ),
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          setState(() {
-                            _type = 'top';
-                          });
-                        },
-                        style: ButtonStyle(
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18.0),
-                              side: BorderSide(
-                                color: (_type == 'top')
-                                    ? Colors.white
-                                    : Colors.transparent,
+                            TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  _type = 'top';
+                                });
+                              },
+                              style: ButtonStyle(
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(18.0),
+                                    side: BorderSide(
+                                      color: (_type == 'top')
+                                          ? Colors.white
+                                          : Colors.transparent,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              child: Text(
+                                'Top',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  color: (_type == 'top')
+                                      ? Colors.white
+                                      : AppTheme.textColor,
+                                ),
                               ),
                             ),
-                          ),
-                        ),
-                        child: Text(
-                          'Top',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            color: (_type == 'top')
-                                ? Colors.white
-                                : AppTheme.textColor,
-                          ),
+                            IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    showSearchbar = true;
+                                  });
+                                },
+                                icon: const Icon(Icons.search)),
+                          ],
                         ),
                       ),
-                      IconButton(
-                          onPressed: () {}, icon: const Icon(Icons.search)),
-                    ],
-                  ),
-                ),
               ),
             ),
           ),

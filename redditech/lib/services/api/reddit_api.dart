@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:redditech/constants/reddit_info.dart';
+import 'package:redditech/models/subreddit_suggestion.dart';
 import 'package:redditech/utils/format_date.dart';
 import 'package:redditech/services/repositories/user_repository.dart';
 import 'package:redditech/utils/format_number.dart';
@@ -222,6 +223,29 @@ abstract class RedditAPI {
     checkResponseStatusCode(response);
 
     return !userIsSubscriber;
+  }
+
+  static Future<List<RedditSub>> fetchSubredditSuggestions(String subreddit) async {
+    final token = await Modular.get<UserRepository>().getToken();
+    final url = Uri.parse('https://oauth.reddit.com/api/subreddit_autocomplete?query=$subreddit');
+    final headers = {
+      HttpHeaders.authorizationHeader : 'Bearer $token',
+      HttpHeaders.userAgentHeader : RedditInfo.userAgent,
+    };
+    http.Response response = await http.get(
+      url,
+      headers: headers,
+    );
+    checkResponseStatusCode(response);
+    
+    final subreddits = jsonDecode(response.body);
+    final listResult = List<RedditSub>.from(subreddits["subreddits"].map((subreddit) {
+      if(!subreddit["name"].toString().startsWith('u_')) {
+        return RedditSub.fromJson(subreddit);
+      }
+    }).toList());
+
+    return listResult;
   }
 }
 
