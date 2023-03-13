@@ -1,10 +1,10 @@
 # Flutter Reddit Project
 
+This project is a Flutter mobile application that replicates the functionality of Reddit. It utilizes Reddit's API to retrieve data and display it in the app.
+
 <p align="center">
 <img src="./redditech/assets/presentation_app.gif">
 </p>
-
-This project is a Flutter mobile application that replicates the functionality of Reddit. It utilizes Reddit's API to retrieve data and display it in the app.
 
 ## Technologies
 This project uses the following technologies:
