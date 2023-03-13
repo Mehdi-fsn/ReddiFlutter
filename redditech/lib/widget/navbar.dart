@@ -19,6 +19,7 @@ class NavBar extends StatelessWidget {
     return Scaffold(
       body: _body,
       bottomNavigationBar: ConvexAppBar(
+        gradient: AppTheme.gradientSide,
         backgroundColor: AppTheme.primary,
         activeColor: Colors.white,
         items: [
@@ -56,8 +57,8 @@ confirmLogout(BuildContext context) {
           width: 300,
           height: 200,
           child: AlertDialog(
-            title: const Text(
-              'Confirm Log Out ?',
+            title: Text(
+              'confirm-logout'.i18n(),
               textAlign: TextAlign.center,
             ),
             titlePadding: const EdgeInsets.only(top: 18),
@@ -68,8 +69,8 @@ confirmLogout(BuildContext context) {
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: const Text('Cancel',
-                    style: TextStyle(color: AppTheme.secondary)),
+                child: Text('no'.i18n(),
+                    style: const TextStyle(color: AppTheme.secondary)),
               ),
               TextButton(
                 onPressed: () async {
@@ -77,7 +78,7 @@ confirmLogout(BuildContext context) {
                   Modular.to.navigate(AppPath.loginScreenPath);
                 },
                 child: Text(
-                  'logout'.i18n(),
+                  'yes'.i18n(),
                   style: const TextStyle(color: AppTheme.secondary),
                 ),
               ),

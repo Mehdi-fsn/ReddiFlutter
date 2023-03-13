@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_modular/flutter_modular.dart';
+import 'package:localization/localization.dart';
 import 'package:redditech/constants/app_theme.dart';
 import 'package:redditech/constants/reddit_info.dart';
 import 'package:redditech/services/api/reddit_api.dart';
@@ -64,9 +64,9 @@ class _HeaderSubredditState extends State<HeaderSubreddit> {
               padding: const EdgeInsets.all(8.0),
               child: Container(
                 decoration: BoxDecoration(
-                  color: AppTheme.primary,
-                  borderRadius: BorderRadius.circular(10),
-                ),
+                    gradient: AppTheme.gradientTop,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: const [AppTheme.boxShadow]),
                 child: Column(
                   children: [
                     SizedBox(
@@ -166,7 +166,7 @@ class _HeaderSubredditState extends State<HeaderSubreddit> {
                                   ),
                                   const SizedBox(width: 5),
                                   Text(
-                                    '$_subscribers members',
+                                    '$_subscribers ${'members'.i18n()}',
                                     style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 12,
@@ -202,9 +202,11 @@ class _HeaderSubredditState extends State<HeaderSubreddit> {
                                   _userIsSubscriber = subbed;
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
-                                      content: Text(_userIsSubscriber
-                                          ? 'Joined $_name'
-                                          : 'Left $_name'),
+                                      content: Text(
+                                        _userIsSubscriber
+                                            ? 'joined'.i18n([_name])
+                                            : 'left'.i18n([_name]),
+                                      ),
                                       duration: const Duration(seconds: 3),
                                       backgroundColor: AppTheme.secondary,
                                     ),
@@ -227,7 +229,9 @@ class _HeaderSubredditState extends State<HeaderSubreddit> {
                               ),
                             ),
                             child: Text(
-                              (_userIsSubscriber) ? 'Leave' : 'Join',
+                              (_userIsSubscriber)
+                                  ? 'leave'.i18n()
+                                  : 'join'.i18n(),
                               style: const TextStyle(
                                 color: AppTheme.primary,
                                 fontSize: 12,

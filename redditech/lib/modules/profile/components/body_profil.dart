@@ -198,13 +198,16 @@ class _SettingsState extends State<Settings> {
                 ),
               );
             default:
+              print(snapshot.data);
               if (snapshot.hasError) {
                 ErrorCatch.catchError(snapshot, context);
                 return const SizedBox.shrink();
               }
 
               if (!_isUpdating) {
-                _lang = snapshot.data!['lang'];
+                (snapshot.data!['lang'] == 'en-US')
+                    ? _lang = 'en'
+                    : _lang = snapshot.data!['lang'];
                 _over18 = snapshot.data!['over_18'];
                 _allowClicktracking = snapshot.data!['allow_clicktracking'];
                 _showLocationBasedRecommendations =

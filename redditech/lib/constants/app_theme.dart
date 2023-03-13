@@ -10,8 +10,26 @@ class AppTheme {
     blurRadius: 20,
     offset: Offset(0, 5),
   );
-  
-  // Specific 
+
+  static Gradient gradientSide = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [
+      AppTheme.primary,
+      AppTheme.primary.withOpacity(0.65),
+    ],
+  );
+
+  static Gradient gradientTop = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [
+      AppTheme.primary,
+      AppTheme.primary.withOpacity(0.65),
+    ],
+  );
+
+  // Specific
 
   // Login
   static const Color loginBackgroundColor = Color(0xffEFF7FF);

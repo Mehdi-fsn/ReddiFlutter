@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:localization/localization.dart';
 import 'package:redditech/constants/app_path.dart';
 
 import 'package:redditech/constants/app_theme.dart';
@@ -35,9 +36,9 @@ class _HomeScreenState extends State<HomeScreen> {
               right: 10,
             ),
             child: Container(
-              decoration: const BoxDecoration(
-                color: AppTheme.primary,
-                borderRadius: BorderRadius.all(Radius.circular(10)),
+              decoration: BoxDecoration(
+                gradient: AppTheme.gradientSide,
+                borderRadius: const BorderRadius.all(Radius.circular(10)),
               ),
               child: SizedBox(
                 width: double.infinity,
@@ -252,7 +253,7 @@ class SearchBar extends StatelessWidget {
                   icon: const Icon(Icons.arrow_back),
                 ),
                 suffixIcon: const Icon(Icons.search),
-                hintText: 'Search subreddit',
+                hintText: 'search-subreddits'.i18n(),
               ),
             ),
             suggestionsCallback: (pattern) async {
@@ -269,11 +270,11 @@ class SearchBar extends StatelessWidget {
                 return const SizedBox.shrink();
               }
             },
-            noItemsFoundBuilder: (context) => const ListTile(
-              title: Text('No Subreddits Found'),
+            noItemsFoundBuilder: (context) => ListTile(
+              title: Text('no-subreddits-found'.i18n()),
             ),
-            loadingBuilder: (context) => const ListTile(
-              title: Text('Loading...'),
+            loadingBuilder: (context) => ListTile(
+              title: Text('loading...'.i18n()),
             ),
             errorBuilder: (context, error) => Text('$error'),
             minCharsForSuggestions: 2,

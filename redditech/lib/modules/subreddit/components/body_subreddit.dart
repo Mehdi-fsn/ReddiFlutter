@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localization/localization.dart';
 import 'package:redditech/constants/app_theme.dart';
 import 'package:redditech/models/reddit_post.dart';
 import 'package:redditech/services/api/reddit_api.dart';
@@ -14,7 +15,7 @@ class BodySubreddit extends StatefulWidget {
 }
 
 class _BodySubredditState extends State<BodySubreddit> {
-  var _type = 'hot';
+  var _type = 'best';
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +45,35 @@ class _BodySubredditState extends State<BodySubreddit> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          _type = 'best';
+                        });
+                      },
+                      style: ButtonStyle(
+                        shape:
+                        MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18.0),
+                            side: BorderSide(
+                              color: (_type == 'best')
+                                  ? AppTheme.primary
+                                  : Colors.transparent,
+                            ),
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        'Best',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: (_type == 'best')
+                              ? AppTheme.primary
+                              : AppTheme.textColor,
+                        ),
+                      ),
+                    ),
                     TextButton(
                       onPressed: () {
                         setState(() {
@@ -131,54 +161,37 @@ class _BodySubredditState extends State<BodySubreddit> {
                         ),
                       ),
                     ),
-                    TextButton(
-                      onPressed: () {
-                        setState(() {
-                          _type = 'rising';
-                        });
-                      },
-                      style: ButtonStyle(
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18.0),
-                            side: BorderSide(
-                              color: (_type == 'rising')
-                                  ? AppTheme.primary
-                                  : Colors.transparent,
+                  ],
+                ),
+                snapshot.data!.isNotEmpty
+                    ? ListView.builder(
+                        shrinkWrap: true,
+                        primary: false,
+                        itemCount: snapshot.data!.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return RedditPost(
+                            subreddit: snapshot.data![index]['subreddit'],
+                            title: snapshot.data![index]['title'],
+                            author: snapshot.data![index]['author'],
+                            media: snapshot.data![index]['media'],
+                            thumbnail: snapshot.data![index]['thumbnail'],
+                            score: snapshot.data![index]['score'],
+                            numComments: snapshot.data![index]['numComments'],
+                            createdUtc: snapshot.data![index]['createdUtc'],
+                          );
+                        },
+                      )
+                    : SizedBox(
+                        height: 400,
+                        child: Center(
+                          child: Text(
+                            'no-posts-found'.i18n(),
+                            style: const TextStyle(
+                              fontSize: 20,
                             ),
                           ),
                         ),
                       ),
-                      child: Text(
-                        'Rising',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          color: (_type == 'rising')
-                              ? AppTheme.primary
-                              : AppTheme.textColor,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                ListView.builder(
-                  shrinkWrap: true,
-                  primary: false,
-                  itemCount: snapshot.data!.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return RedditPost(
-                      subreddit: snapshot.data![index]['subreddit'],
-                      title: snapshot.data![index]['title'],
-                      author: snapshot.data![index]['author'],
-                      media: snapshot.data![index]['media'],
-                      thumbnail: snapshot.data![index]['thumbnail'],
-                      score: snapshot.data![index]['score'],
-                      numComments: snapshot.data![index]['numComments'],
-                      createdUtc: snapshot.data![index]['createdUtc'],
-                    );
-                  },
-                ),
               ],
             );
         }

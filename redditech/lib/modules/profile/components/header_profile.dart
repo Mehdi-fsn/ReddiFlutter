@@ -106,8 +106,9 @@ class AvatarBannerUsernameVarInfoBloc extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: AppTheme.primary,
+        gradient: AppTheme.gradientTop,
         borderRadius: BorderRadius.circular(10),
+        boxShadow: const [AppTheme.boxShadow],
       ),
       child: Column(
         children: [
