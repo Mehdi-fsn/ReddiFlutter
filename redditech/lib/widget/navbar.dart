@@ -66,7 +66,7 @@ confirmLogout(BuildContext context) {
             actions: [
               TextButton(
                 onPressed: () {
-                  Modular.to.pop(context);
+                  Navigator.pop(context);
                 },
                 child: const Text('Cancel',
                     style: TextStyle(color: AppTheme.secondary)),

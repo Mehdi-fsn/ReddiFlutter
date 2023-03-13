@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:redditech/constants/app_theme.dart';
 import 'package:redditech/constants/reddit_info.dart';
 import 'package:redditech/services/api/reddit_api.dart';
@@ -199,6 +200,15 @@ class _HeaderSubredditState extends State<HeaderSubreddit> {
                               subbed.then((subbed) {
                                 setState(() {
                                   _userIsSubscriber = subbed;
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(_userIsSubscriber
+                                          ? 'Joined $_name'
+                                          : 'Left $_name'),
+                                      duration: const Duration(seconds: 3),
+                                      backgroundColor: AppTheme.secondary,
+                                    ),
+                                  );
                                 });
                               });
                             },

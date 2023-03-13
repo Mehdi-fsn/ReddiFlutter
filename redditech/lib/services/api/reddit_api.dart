@@ -225,7 +225,7 @@ abstract class RedditAPI {
     return !userIsSubscriber;
   }
 
-  static Future<List<RedditSub>> fetchSubredditSuggestions(String subreddit) async {
+  static Future<List<SubredditSuggestion>> fetchSubredditSuggestions(String subreddit) async {
     final token = await Modular.get<UserRepository>().getToken();
     final url = Uri.parse('https://oauth.reddit.com/api/subreddit_autocomplete?query=$subreddit');
     final headers = {
@@ -239,10 +239,8 @@ abstract class RedditAPI {
     checkResponseStatusCode(response);
     
     final subreddits = jsonDecode(response.body);
-    final listResult = List<RedditSub>.from(subreddits["subreddits"].map((subreddit) {
-      if(!subreddit["name"].toString().startsWith('u_')) {
-        return RedditSub.fromJson(subreddit);
-      }
+    final listResult = List<SubredditSuggestion>.from(subreddits["subreddits"].map((subreddit) {
+      return SubredditSuggestion.fromJson(subreddit);
     }).toList());
 
     return listResult;

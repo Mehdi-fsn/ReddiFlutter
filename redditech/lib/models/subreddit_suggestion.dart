@@ -1,9 +1,9 @@
-class RedditSub {
+class SubredditSuggestion {
   final String name;
 
-  RedditSub({required this.name});
+  SubredditSuggestion({required this.name});
 
-  static RedditSub fromJson(Map<String, dynamic> json) => RedditSub(
+  static SubredditSuggestion fromJson(Map<String, dynamic> json) => SubredditSuggestion(
     name: json["name"],
   );
 }
