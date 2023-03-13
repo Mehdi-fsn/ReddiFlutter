@@ -29,8 +29,6 @@ class AppTheme {
     ],
   );
 
-  // Specific
-
   // Login
   static const Color loginBackgroundColor = Color(0xffEFF7FF);
 }

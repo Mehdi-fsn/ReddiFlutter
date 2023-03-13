@@ -103,7 +103,7 @@ class _LoginButtonState extends State<LoginButton> {
               Modular.to.navigate(AppPath.homeScreenPath);
             },
             style: ElevatedButton.styleFrom(
-              fixedSize: const Size(200, 60),
+              fixedSize: const Size(220, 60),
               backgroundColor: AppTheme.primary.withOpacity(0.7),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15),

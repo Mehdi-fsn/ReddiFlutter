@@ -86,7 +86,6 @@ class _BodyProfileState extends State<BodyProfile> {
           ),
         ),
         const SizedBox(height: 10),
-        // IndexedStack allow to display only one widget at a time without rebuilding the other
         IndexedStack(
           index: _tabController,
           children: const [
@@ -198,7 +197,6 @@ class _SettingsState extends State<Settings> {
                 ),
               );
             default:
-              print(snapshot.data);
               if (snapshot.hasError) {
                 ErrorCatch.catchError(snapshot, context);
                 return const SizedBox.shrink();
