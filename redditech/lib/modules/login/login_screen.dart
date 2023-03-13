@@ -81,37 +81,51 @@ class Banner extends StatelessWidget {
   }
 }
 
-class LoginButton extends StatelessWidget {
+class LoginButton extends StatefulWidget {
   const LoginButton({Key? key}) : super(key: key);
 
   @override
+  State<LoginButton> createState() => _LoginButtonState();
+}
+
+class _LoginButtonState extends State<LoginButton> {
+  bool _isLoading = false;
+
+  @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () async {
-        await AuthenticationAPI().authentication();
-        Modular.to.navigate(AppPath.homeScreenPath);
-      },
-      style: ElevatedButton.styleFrom(
-        fixedSize: const Size(200, 60),
-        backgroundColor: AppTheme.primary.withOpacity(0.7),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.reddit, color: Colors.white),
-          const SizedBox(width: 10),
-          Text(
-            "continue-with-reddit".i18n(),
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
+    return !_isLoading
+        ? ElevatedButton(
+            onPressed: () async {
+              setState(() {
+                _isLoading = true;
+              });
+              await AuthenticationAPI().authentication();
+              Modular.to.navigate(AppPath.homeScreenPath);
+            },
+            style: ElevatedButton.styleFrom(
+              fixedSize: const Size(200, 60),
+              backgroundColor: AppTheme.primary.withOpacity(0.7),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
             ),
-          ),
-        ],
-      ),
-    );
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.reddit, color: Colors.white),
+                const SizedBox(width: 10),
+                Text(
+                  "continue-with-reddit".i18n(),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          )
+        : const CircularProgressIndicator(
+            color: AppTheme.primary,
+          );
   }
 }
