@@ -263,7 +263,7 @@ class SearchBar extends StatelessWidget {
               if (!suggestion.name.startsWith('u_')) {
                 return ListTile(
                     title: Text(
-                  suggestion.name,
+                  'r/${suggestion.name}',
                   style: const TextStyle(color: Colors.black),
                 ));
               } else {

@@ -98,12 +98,26 @@ class _HeaderSubredditState extends State<HeaderSubreddit> {
                           Positioned(
                             top: 40,
                             left: 10,
-                            child: SizedBox(
+                            child: Container(
                               width: 120,
                               height: 120,
-                              child: CircleAvatar(
-                                backgroundColor: Colors.white,
-                                backgroundImage: NetworkImage(_iconUrl),
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                              ),
+                              child: ClipOval(
+                                child: CachedNetworkImage(
+                                  imageUrl: _iconUrl,
+                                  fit: BoxFit.cover,
+                                  errorWidget: (context, error, stackTrace) =>
+                                      const Image(
+                                    image: AssetImage('assets/ic_launcher.png'),
+                                  ),
+                                  placeholder: (context, url) => const Center(
+                                    child: CircularProgressIndicator(
+                                      color: AppTheme.secondary,
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
                           ),
@@ -193,50 +207,9 @@ class _HeaderSubredditState extends State<HeaderSubreddit> {
                               ),
                             ],
                           ),
-                          TextButton(
-                            onPressed: () {
-                              var subbed = RedditAPI.changeSubbed(
-                                  _userIsSubscriber, _name);
-                              subbed.then((subbed) {
-                                setState(() {
-                                  _userIsSubscriber = subbed;
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        _userIsSubscriber
-                                            ? 'joined'.i18n([_name])
-                                            : 'left'.i18n([_name]),
-                                      ),
-                                      duration: const Duration(seconds: 3),
-                                      backgroundColor: AppTheme.secondary,
-                                    ),
-                                  );
-                                });
-                              });
-                            },
-                            style: ButtonStyle(
-                              shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(18.0),
-                                  side: const BorderSide(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                Colors.white,
-                              ),
-                            ),
-                            child: Text(
-                              (_userIsSubscriber)
-                                  ? 'leave'.i18n()
-                                  : 'join'.i18n(),
-                              style: const TextStyle(
-                                color: AppTheme.primary,
-                                fontSize: 12,
-                              ),
-                            ),
+                          JoinButton(
+                            name: _name,
+                            userIsSubscriber: _userIsSubscriber,
                           ),
                         ],
                       ),
@@ -247,6 +220,73 @@ class _HeaderSubredditState extends State<HeaderSubreddit> {
             );
         }
       },
+    );
+  }
+}
+
+class JoinButton extends StatefulWidget {
+  const JoinButton(
+      {Key? key, required this.name, required this.userIsSubscriber})
+      : super(key: key);
+
+  final String name;
+  final bool userIsSubscriber;
+
+  @override
+  State<JoinButton> createState() => _JoinButtonState();
+}
+
+class _JoinButtonState extends State<JoinButton> {
+  bool _userIsSubscriber = false;
+
+  @override
+  initState() {
+    super.initState();
+    _userIsSubscriber = widget.userIsSubscriber;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: () {
+        var subbed = RedditAPI.changeSubbed(_userIsSubscriber, widget.name);
+        subbed.then((subbed) {
+          setState(() {
+            _userIsSubscriber = subbed;
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  _userIsSubscriber
+                      ? 'joined'.i18n([widget.name])
+                      : 'left'.i18n([widget.name]),
+                ),
+                duration: const Duration(seconds: 3),
+                backgroundColor: AppTheme.secondary,
+              ),
+            );
+          });
+        });
+      },
+      style: ButtonStyle(
+        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18.0),
+            side: const BorderSide(
+              color: Colors.white,
+            ),
+          ),
+        ),
+        backgroundColor: MaterialStateProperty.all<Color>(
+          Colors.white,
+        ),
+      ),
+      child: Text(
+        (_userIsSubscriber) ? 'leave'.i18n() : 'join'.i18n(),
+        style: const TextStyle(
+          color: AppTheme.primary,
+          fontSize: 12,
+        ),
+      ),
     );
   }
 }
