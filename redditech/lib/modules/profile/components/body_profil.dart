@@ -6,6 +6,7 @@ import 'package:redditech/constants/app_theme.dart';
 import 'package:redditech/models/reddit_post.dart';
 import 'package:redditech/services/api/reddit_api.dart';
 import 'package:redditech/services/bloc/localization/localization_bloc.dart';
+import 'package:redditech/utils/error_catch.dart';
 
 class BodyProfile extends StatefulWidget {
   const BodyProfile({Key? key}) : super(key: key);
@@ -85,7 +86,6 @@ class _BodyProfileState extends State<BodyProfile> {
           ),
         ),
         const SizedBox(height: 10),
-        // IndexedStack allow to display only one widget at a time without rebuilding the other
         IndexedStack(
           index: _tabController,
           children: const [
@@ -118,6 +118,11 @@ class ListUserPost extends StatelessWidget {
                 ),
               );
             default:
+              if (snapshot.hasError) {
+                ErrorCatch.catchError(snapshot, context);
+                return const SizedBox.shrink();
+              }
+
               if (snapshot.data!.isEmpty) {
                 return SizedBox(
                   height: 300,
@@ -141,7 +146,7 @@ class ListUserPost extends StatelessWidget {
                     subreddit: snapshot.data![index]["subreddit"],
                     author: snapshot.data![index]["author"],
                     title: snapshot.data![index]["title"],
-                    selfText: snapshot.data![index]["selfText"],
+                    media: snapshot.data![index]["media"],
                     thumbnail: snapshot.data![index]["thumbnail"],
                     score: snapshot.data![index]["score"],
                     numComments: snapshot.data![index]["numComments"],
@@ -192,8 +197,15 @@ class _SettingsState extends State<Settings> {
                 ),
               );
             default:
+              if (snapshot.hasError) {
+                ErrorCatch.catchError(snapshot, context);
+                return const SizedBox.shrink();
+              }
+
               if (!_isUpdating) {
-                _lang = snapshot.data!['lang'];
+                (snapshot.data!['lang'] == 'en-US')
+                    ? _lang = 'en'
+                    : _lang = snapshot.data!['lang'];
                 _over18 = snapshot.data!['over_18'];
                 _allowClicktracking = snapshot.data!['allow_clicktracking'];
                 _showLocationBasedRecommendations =
@@ -225,10 +237,8 @@ class _SettingsState extends State<Settings> {
                                   ),
                                 ],
                                 onChanged: (value) {
-                                  var futureIsDone =
-                                      RedditAPI.updateRedditPreferences(
-                                          {'lang': value});
-                                  futureIsDone.then((future) {
+                                  RedditAPI.updateRedditPreferences(
+                                      {'lang': value}).then((future) {
                                     if (value != _lang && value == 'en') {
                                       BlocProvider.of<LocalizationBloc>(context)
                                           .add(const LocalizationChangedEvent(
@@ -248,10 +258,8 @@ class _SettingsState extends State<Settings> {
                               activeColor: AppTheme.secondary,
                               value: _over18,
                               onChanged: (value) {
-                                var futureIsDone =
-                                    RedditAPI.updateRedditPreferences(
-                                        {'over_18': value});
-                                futureIsDone.then((future) {
+                                RedditAPI.updateRedditPreferences(
+                                    {'over_18': value}).then((future) {
                                   setState(() {
                                     _over18 = value;
                                   });
@@ -263,10 +271,9 @@ class _SettingsState extends State<Settings> {
                               activeColor: AppTheme.secondary,
                               value: _allowClicktracking,
                               onChanged: (value) {
-                                var futureIsDone =
-                                    RedditAPI.updateRedditPreferences(
-                                        {'allow_clicktracking': value});
-                                futureIsDone.then((future) {
+                                RedditAPI.updateRedditPreferences(
+                                        {'allow_clicktracking': value})
+                                    .then((future) {
                                   setState(() {
                                     _allowClicktracking = value;
                                   });
@@ -279,11 +286,9 @@ class _SettingsState extends State<Settings> {
                               activeColor: AppTheme.secondary,
                               value: _showLocationBasedRecommendations,
                               onChanged: (value) {
-                                var futureIsDone =
-                                    RedditAPI.updateRedditPreferences({
+                                RedditAPI.updateRedditPreferences({
                                   'show_location_based_recommendations': value
-                                });
-                                futureIsDone.then((future) {
+                                }).then((future) {
                                   setState(() {
                                     _showLocationBasedRecommendations = value;
                                   });

@@ -19,10 +19,11 @@ class NavBar extends StatelessWidget {
     return Scaffold(
       body: _body,
       bottomNavigationBar: ConvexAppBar(
+        gradient: AppTheme.gradientSide,
         backgroundColor: AppTheme.primary,
         activeColor: Colors.white,
         items: [
-          TabItem(icon: Icons.settings, title: 'profile'.i18n()),
+          TabItem(icon: Icons.person, title: 'profile'.i18n()),
           TabItem(icon: Icons.home, title: 'home'.i18n()),
           TabItem(icon: Icons.logout, title: 'logout'.i18n()),
         ],
@@ -36,8 +37,7 @@ class NavBar extends StatelessWidget {
               Modular.to.navigate(AppPath.homeScreenPath);
               break;
             case 2:
-              await Modular.get<UserRepository>().deleteToken();
-              Modular.to.navigate(AppPath.loginScreenPath);
+              confirmLogout(context);
               break;
             default:
               break;
@@ -46,4 +46,46 @@ class NavBar extends StatelessWidget {
       ),
     );
   }
+}
+
+confirmLogout(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return Center(
+        child: SizedBox(
+          width: 300,
+          height: 200,
+          child: AlertDialog(
+            title: Text(
+              'confirm-logout'.i18n(),
+              textAlign: TextAlign.center,
+            ),
+            titlePadding: const EdgeInsets.only(top: 18),
+            actionsAlignment: MainAxisAlignment.center,
+            insetPadding: const EdgeInsets.all(25),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('no'.i18n(),
+                    style: const TextStyle(color: AppTheme.secondary)),
+              ),
+              TextButton(
+                onPressed: () async {
+                  await Modular.get<UserRepository>().deleteToken();
+                  Modular.to.navigate(AppPath.loginScreenPath);
+                },
+                child: Text(
+                  'yes'.i18n(),
+                  style: const TextStyle(color: AppTheme.secondary),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
 }

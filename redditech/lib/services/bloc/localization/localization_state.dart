@@ -14,4 +14,3 @@ class LocalizationState extends Equatable {
   @override
   List<Object> get props => [locale];
 }
-

@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:localization/localization.dart';
+import 'package:redditech/constants/app_path.dart';
 
 import 'package:redditech/constants/app_theme.dart';
 import 'package:redditech/models/reddit_post.dart';
+import 'package:redditech/models/subreddit_suggestion.dart';
 import 'package:redditech/services/api/reddit_api.dart';
+import 'package:redditech/utils/error_catch.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -12,7 +18,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  var _type = 'hot';
+  var _type = 'best';
 
   @override
   Widget build(BuildContext context) {
@@ -30,9 +36,9 @@ class _HomeScreenState extends State<HomeScreen> {
               right: 10,
             ),
             child: Container(
-              decoration: const BoxDecoration(
-                color: AppTheme.primary,
-                borderRadius: BorderRadius.all(Radius.circular(10)),
+              decoration: BoxDecoration(
+                gradient: AppTheme.gradientSide,
+                borderRadius: const BorderRadius.all(Radius.circular(10)),
               ),
               child: SizedBox(
                 width: double.infinity,
@@ -40,6 +46,35 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
+                      TextButton(
+                        onPressed: () {
+                          setState(() {
+                            _type = 'best';
+                          });
+                        },
+                        style: ButtonStyle(
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                              side: BorderSide(
+                                color: (_type == 'best')
+                                    ? Colors.white
+                                    : Colors.transparent,
+                              ),
+                            ),
+                          ),
+                        ),
+                        child: Text(
+                          'Best',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            color: (_type == 'best')
+                                ? Colors.white
+                                : AppTheme.textColor,
+                          ),
+                        ),
+                      ),
                       TextButton(
                         onPressed: () {
                           setState(() {
@@ -127,37 +162,17 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                       ),
-                      TextButton(
+                      IconButton(
                         onPressed: () {
                           setState(() {
-                            _type = 'rising';
+                            Modular.to.pushNamed(AppPath.searchScreenPath);
                           });
                         },
-                        style: ButtonStyle(
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18.0),
-                              side: BorderSide(
-                                color: (_type == 'rising')
-                                    ? Colors.white
-                                    : Colors.transparent,
-                              ),
-                            ),
-                          ),
-                        ),
-                        child: Text(
-                          'Rising',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            color: (_type == 'rising')
-                                ? Colors.white
-                                : AppTheme.textColor,
-                          ),
+                        icon: const Icon(
+                          Icons.search,
+                          color: AppTheme.textColor,
                         ),
                       ),
-                      IconButton(
-                          onPressed: () {}, icon: const Icon(Icons.search)),
                     ],
                   ),
                 ),
@@ -182,7 +197,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               default:
                 if (snapshot.hasError) {
-                  const Center(child: Text('Error loading'));
+                  ErrorCatch.catchError(snapshot, context);
+                  return const SizedBox.shrink();
                 }
                 return Expanded(
                   child: ListView.builder(
@@ -193,7 +209,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         subreddit: snapshot.data![index]["subreddit"],
                         author: snapshot.data![index]["author"],
                         title: snapshot.data![index]["title"],
-                        selfText: snapshot.data![index]["selfText"],
+                        media: snapshot.data![index]["media"],
                         thumbnail: snapshot.data![index]["thumbnail"],
                         score: snapshot.data![index]["score"],
                         numComments: snapshot.data![index]["numComments"],
@@ -206,6 +222,69 @@ class _HomeScreenState extends State<HomeScreen> {
           },
         ),
       ],
+    );
+  }
+}
+
+class SearchBar extends StatelessWidget {
+  const SearchBar({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox.expand(
+      child: Padding(
+        padding: const EdgeInsets.only(
+          top: 10,
+          left: 10,
+          right: 10,
+        ),
+        child: SingleChildScrollView(
+          child: TypeAheadField<SubredditSuggestion>(
+            suggestionsBoxDecoration: const SuggestionsBoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+            ),
+            textFieldConfiguration: TextFieldConfiguration(
+              decoration: InputDecoration(
+                focusColor: AppTheme.secondary,
+                prefixIcon: IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: const Icon(Icons.arrow_back),
+                ),
+                suffixIcon: const Icon(Icons.search),
+                hintText: 'search-subreddits'.i18n(),
+              ),
+            ),
+            suggestionsCallback: (pattern) async {
+              return await RedditAPI.fetchSubredditSuggestions(pattern);
+            },
+            itemBuilder: (context, SubredditSuggestion suggestion) {
+              if (!suggestion.name.startsWith('u_')) {
+                return ListTile(
+                    title: Text(
+                  'r/${suggestion.name}',
+                  style: const TextStyle(color: Colors.black),
+                ));
+              } else {
+                return const SizedBox.shrink();
+              }
+            },
+            noItemsFoundBuilder: (context) => ListTile(
+              title: Text('no-subreddits-found'.i18n()),
+            ),
+            loadingBuilder: (context) => ListTile(
+              title: Text('loading...'.i18n()),
+            ),
+            errorBuilder: (context, error) => Text('$error'),
+            minCharsForSuggestions: 2,
+            onSuggestionSelected: (SubredditSuggestion suggestion) {
+              Modular.to.pushNamed(
+                  '${AppPath.subredditScreenPath}/${suggestion.name}');
+            },
+          ),
+        ),
+      ),
     );
   }
 }

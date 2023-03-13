@@ -4,7 +4,7 @@ import 'package:redditech/services/repositories/user_repository.dart';
 
 class IsAuthenticateGuard extends RouteGuard {
   IsAuthenticateGuard() : super(redirectTo: AppPath.loginScreenPath);
-  
+
   @override
   Future<bool> canActivate(String path, ModularRoute route) async {
     return Modular.get<UserRepository>().isLoggedIn();

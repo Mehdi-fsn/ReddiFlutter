@@ -1,9 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:localization/localization.dart';
 
 import 'package:redditech/constants/app_theme.dart';
 import 'package:redditech/constants/reddit_info.dart';
 import 'package:redditech/services/api/reddit_api.dart';
+import 'package:redditech/utils/error_catch.dart';
 
 class HeaderProfile extends StatefulWidget {
   const HeaderProfile({Key? key}) : super(key: key);
@@ -44,9 +46,8 @@ class _HeaderProfileState extends State<HeaderProfile> {
             );
           default:
             if (snapshot.hasError) {
-              return Center(
-                child: Text('${'loading-error'.i18n()} : ${snapshot.error}'),
-              );
+              ErrorCatch.catchError(snapshot, context);
+              return const SizedBox.shrink();
             }
 
             _username = snapshot.data!['username'];
@@ -105,8 +106,9 @@ class AvatarBannerUsernameVarInfoBloc extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: AppTheme.primary,
+        gradient: AppTheme.gradientTop,
         borderRadius: BorderRadius.circular(10),
+        boxShadow: const [AppTheme.boxShadow],
       ),
       child: Column(
         children: [
@@ -124,10 +126,10 @@ class AvatarBannerUsernameVarInfoBloc extends StatelessWidget {
                   ),
                 ),
                 clipBehavior: Clip.antiAliasWithSaveLayer,
-                child: Image.network(
-                  RedditInfo.urlBanner,
+                child: CachedNetworkImage(
+                  imageUrl: RedditInfo.urlBanner,
                   fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => Container(
+                  errorWidget: (context, error, stackTrace) => Container(
                     color: AppTheme.primary,
                   ),
                 ),
@@ -138,10 +140,10 @@ class AvatarBannerUsernameVarInfoBloc extends StatelessWidget {
                 child: SizedBox(
                   width: 100,
                   height: 150,
-                  child: Image.network(
-                    _avatarUrl!,
+                  child: CachedNetworkImage(
+                    imageUrl: _avatarUrl!,
                     fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => Container(
+                    errorWidget: (context, error, stackTrace) => Container(
                       color: Colors.transparent,
                       alignment: Alignment.bottomCenter,
                       child: const Icon(

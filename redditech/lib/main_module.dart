@@ -79,7 +79,7 @@ class AppWidget extends StatelessWidget {
                     color: AppTheme.textColor,
                   ),
                 ),
-              )
+              ),
             ),
           );
         },

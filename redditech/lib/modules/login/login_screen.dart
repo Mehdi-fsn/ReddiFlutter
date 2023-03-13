@@ -15,7 +15,7 @@ class LoginScreen extends StatelessWidget {
       child: Column(
         children: [
           const Banner(),
-          const SizedBox(height: 50),
+          const SizedBox(height: 30),
           Center(
             child: Column(
               children: [
@@ -28,7 +28,7 @@ class LoginScreen extends StatelessWidget {
                     decoration: TextDecoration.none,
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 30),
                 const LoginButton(),
               ],
             ),
@@ -49,15 +49,13 @@ class Banner extends StatelessWidget {
         Container(
           height: 350,
           width: double.infinity,
-          decoration: const BoxDecoration(
-              color: AppTheme.primary,
-              borderRadius: BorderRadius.only(
+          decoration: BoxDecoration(
+              gradient: AppTheme.gradientTop,
+              borderRadius: const BorderRadius.only(
                 bottomLeft: Radius.circular(130),
                 bottomRight: Radius.circular(130),
               ),
-              boxShadow: [
-                AppTheme.boxShadow,
-                    ]),
+              boxShadow: const [AppTheme.boxShadow]),
         ),
         Positioned(
           top: 180,
@@ -83,37 +81,51 @@ class Banner extends StatelessWidget {
   }
 }
 
-class LoginButton extends StatelessWidget {
+class LoginButton extends StatefulWidget {
   const LoginButton({Key? key}) : super(key: key);
 
   @override
+  State<LoginButton> createState() => _LoginButtonState();
+}
+
+class _LoginButtonState extends State<LoginButton> {
+  bool _isLoading = false;
+
+  @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () async {
-        await AuthenticationAPI().authentication();
-        Modular.to.navigate(AppPath.homeScreenPath);
-      },
-      style: ElevatedButton.styleFrom(
-        fixedSize: const Size(200, 60),
-        backgroundColor: AppTheme.primary,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
-          Icon(Icons.reddit, color: Colors.white),
-          SizedBox(width: 10),
-          Text(
-            "Continue with Reddit",
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
+    return !_isLoading
+        ? ElevatedButton(
+            onPressed: () async {
+              setState(() {
+                _isLoading = true;
+              });
+              await AuthenticationAPI().authentication();
+              Modular.to.navigate(AppPath.homeScreenPath);
+            },
+            style: ElevatedButton.styleFrom(
+              fixedSize: const Size(220, 60),
+              backgroundColor: AppTheme.primary.withOpacity(0.7),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
             ),
-          ),
-        ],
-      ),
-    );
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.reddit, color: Colors.white),
+                const SizedBox(width: 10),
+                Text(
+                  "continue-with-reddit".i18n(),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          )
+        : const CircularProgressIndicator(
+            color: AppTheme.primary,
+          );
   }
 }

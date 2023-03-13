@@ -1,11 +1,10 @@
-import 'dart:developer';
-
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:localization/localization.dart';
 import 'package:redditech/constants/app_theme.dart';
 import 'package:redditech/constants/reddit_info.dart';
 import 'package:redditech/services/api/reddit_api.dart';
-import 'package:redditech/utils/format_date.dart';
-import 'package:redditech/utils/format_number.dart';
+import 'package:redditech/utils/error_catch.dart';
 
 class HeaderSubreddit extends StatefulWidget {
   const HeaderSubreddit({Key? key, required this.subredditName})
@@ -44,9 +43,13 @@ class _HeaderSubredditState extends State<HeaderSubreddit> {
               ),
             );
           default:
+            if (snapshot.hasError) {
+              ErrorCatch.catchError(snapshot, context);
+              return const SizedBox.shrink();
+            }
+
             _name = 'r/${widget.subredditName}';
-            _subscribers =
-                FormatNumber.formatNumber(snapshot.data!['subscribers']);
+            _subscribers = snapshot.data!['subscribers'];
             _description = snapshot.data!['public_description'];
             _iconUrl = (snapshot.data!['icon_img'] != '')
                 ? snapshot.data!['icon_img']
@@ -54,16 +57,16 @@ class _HeaderSubredditState extends State<HeaderSubreddit> {
             _bannerUrl = (snapshot.data!['banner_background_image'] != '')
                 ? snapshot.data!['banner_background_image']
                 : RedditInfo.urlBanner;
-            _createdUtc = FormatDate.exactDate(snapshot.data!['created_utc']);
+            _createdUtc = snapshot.data!['created_utc'];
             _userIsSubscriber = snapshot.data!['user_is_subscriber'];
 
             return Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
                 decoration: BoxDecoration(
-                  color: AppTheme.primary,
-                  borderRadius: BorderRadius.circular(10),
-                ),
+                    gradient: AppTheme.gradientTop,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: const [AppTheme.boxShadow]),
                 child: Column(
                   children: [
                     SizedBox(
@@ -80,20 +83,41 @@ class _HeaderSubredditState extends State<HeaderSubreddit> {
                               ),
                             ),
                             clipBehavior: Clip.antiAliasWithSaveLayer,
-                            child: Image.network(
-                              _bannerUrl,
+                            child: CachedNetworkImage(
+                              imageUrl: _bannerUrl,
                               fit: BoxFit.cover,
+                              errorWidget: (context, error, stackTrace) =>
+                                  const Icon(Icons.error),
+                              placeholder: (context, url) => const Center(
+                                child: CircularProgressIndicator(
+                                  color: AppTheme.secondary,
+                                ),
+                              ),
                             ),
                           ),
                           Positioned(
                             top: 40,
                             left: 10,
-                            child: SizedBox(
+                            child: Container(
                               width: 120,
                               height: 120,
-                              child: CircleAvatar(
-                                backgroundColor: Colors.white,
-                                backgroundImage: NetworkImage(_iconUrl),
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                              ),
+                              child: ClipOval(
+                                child: CachedNetworkImage(
+                                  imageUrl: _iconUrl,
+                                  fit: BoxFit.cover,
+                                  errorWidget: (context, error, stackTrace) =>
+                                      const Image(
+                                    image: AssetImage('assets/ic_launcher.png'),
+                                  ),
+                                  placeholder: (context, url) => const Center(
+                                    child: CircularProgressIndicator(
+                                      color: AppTheme.secondary,
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
                           ),
@@ -156,7 +180,7 @@ class _HeaderSubredditState extends State<HeaderSubreddit> {
                                   ),
                                   const SizedBox(width: 5),
                                   Text(
-                                    '$_subscribers members',
+                                    '$_subscribers ${'members'.i18n()}',
                                     style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 12,
@@ -183,37 +207,9 @@ class _HeaderSubredditState extends State<HeaderSubreddit> {
                               ),
                             ],
                           ),
-                          TextButton(
-                            onPressed: () {
-                              var subbed = RedditAPI.changeSubbed(
-                                  _userIsSubscriber, _name);
-                              subbed.then((subbed) {
-                                setState(() {
-                                  _userIsSubscriber = subbed;
-                                });
-                              });
-                            },
-                            style: ButtonStyle(
-                              shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(18.0),
-                                  side: const BorderSide(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                Colors.white,
-                              ),
-                            ),
-                            child: Text(
-                              (_userIsSubscriber) ? 'Leave' : 'Join',
-                              style: const TextStyle(
-                                color: AppTheme.primary,
-                                fontSize: 12,
-                              ),
-                            ),
+                          JoinButton(
+                            name: _name,
+                            userIsSubscriber: _userIsSubscriber,
                           ),
                         ],
                       ),
@@ -224,6 +220,73 @@ class _HeaderSubredditState extends State<HeaderSubreddit> {
             );
         }
       },
+    );
+  }
+}
+
+class JoinButton extends StatefulWidget {
+  const JoinButton(
+      {Key? key, required this.name, required this.userIsSubscriber})
+      : super(key: key);
+
+  final String name;
+  final bool userIsSubscriber;
+
+  @override
+  State<JoinButton> createState() => _JoinButtonState();
+}
+
+class _JoinButtonState extends State<JoinButton> {
+  bool _userIsSubscriber = false;
+
+  @override
+  initState() {
+    super.initState();
+    _userIsSubscriber = widget.userIsSubscriber;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: () {
+        var subbed = RedditAPI.changeSubbed(_userIsSubscriber, widget.name);
+        subbed.then((subbed) {
+          setState(() {
+            _userIsSubscriber = subbed;
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  _userIsSubscriber
+                      ? 'joined'.i18n([widget.name])
+                      : 'left'.i18n([widget.name]),
+                ),
+                duration: const Duration(seconds: 3),
+                backgroundColor: AppTheme.secondary,
+              ),
+            );
+          });
+        });
+      },
+      style: ButtonStyle(
+        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18.0),
+            side: const BorderSide(
+              color: Colors.white,
+            ),
+          ),
+        ),
+        backgroundColor: MaterialStateProperty.all<Color>(
+          Colors.white,
+        ),
+      ),
+      child: Text(
+        (_userIsSubscriber) ? 'leave'.i18n() : 'join'.i18n(),
+        style: const TextStyle(
+          color: AppTheme.primary,
+          fontSize: 12,
+        ),
+      ),
     );
   }
 }

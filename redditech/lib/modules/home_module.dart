@@ -26,6 +26,11 @@ class HomeModule extends Module {
           ),
         ),
         ChildRoute(
+          AppPath.searchScreenPath,
+          transition: TransitionType.rightToLeftWithFade,
+          child: (context, args) => const SearchBar(),
+        ),
+        ChildRoute(
           AppPath.profileScreenPath,
           transition: TransitionType.rightToLeft,
           child: (context, args) => const ProfileScreen(),
