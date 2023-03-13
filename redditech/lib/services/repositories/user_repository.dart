@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class UserRepository {
   late String token;
+
   UserRepository();
 
   // Token

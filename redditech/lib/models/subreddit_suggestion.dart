@@ -3,7 +3,8 @@ class SubredditSuggestion {
 
   SubredditSuggestion({required this.name});
 
-  static SubredditSuggestion fromJson(Map<String, dynamic> json) => SubredditSuggestion(
-    name: json["name"],
-  );
+  static SubredditSuggestion fromJson(Map<String, dynamic> json) =>
+      SubredditSuggestion(
+        name: json["name"],
+      );
 }

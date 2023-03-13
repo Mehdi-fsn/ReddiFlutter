@@ -13,7 +13,9 @@ class SubredditScreen extends StatelessWidget {
       child: Column(
         children: [
           HeaderSubreddit(subredditName: subredditName),
-          BodySubreddit(subredditName: subredditName,),
+          BodySubreddit(
+            subredditName: subredditName,
+          ),
         ],
       ),
     );

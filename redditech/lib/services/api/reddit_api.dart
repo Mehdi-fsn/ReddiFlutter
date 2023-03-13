@@ -225,21 +225,24 @@ abstract class RedditAPI {
     return !userIsSubscriber;
   }
 
-  static Future<List<SubredditSuggestion>> fetchSubredditSuggestions(String subreddit) async {
+  static Future<List<SubredditSuggestion>> fetchSubredditSuggestions(
+      String subreddit) async {
     final token = await Modular.get<UserRepository>().getToken();
-    final url = Uri.parse('https://oauth.reddit.com/api/subreddit_autocomplete?query=$subreddit');
+    final url = Uri.parse(
+        'https://oauth.reddit.com/api/subreddit_autocomplete?query=$subreddit');
     final headers = {
-      HttpHeaders.authorizationHeader : 'Bearer $token',
-      HttpHeaders.userAgentHeader : RedditInfo.userAgent,
+      HttpHeaders.authorizationHeader: 'Bearer $token',
+      HttpHeaders.userAgentHeader: RedditInfo.userAgent,
     };
     http.Response response = await http.get(
       url,
       headers: headers,
     );
     checkResponseStatusCode(response);
-    
+
     final subreddits = jsonDecode(response.body);
-    final listResult = List<SubredditSuggestion>.from(subreddits["subreddits"].map((subreddit) {
+    final listResult = List<SubredditSuggestion>.from(
+        subreddits["subreddits"].map((subreddit) {
       return SubredditSuggestion.fromJson(subreddit);
     }).toList());
 
